@@ -11,7 +11,7 @@ export interface Hint {
     expected: any; // Expected result
   }
   
-  export interface Challenge {
+export interface Challenge {
     id: string;
     title: string;
     description: string;
@@ -20,6 +20,7 @@ export interface Hint {
     hints: Hint[]; // Progressive hints
     tests: TestCase[]; // For validation
     realm: string;
+    difficulty: 'easy' | 'medium' | 'hard';
   }
   
   export const challenges: Challenge[] = [
@@ -51,7 +52,8 @@ export interface Hint {
           expected: "Hello World"
         }
       ],
-      realm: "javascript"
+      realm: "javascript",
+      difficulty: "easy"
     },
     // Add more challenges here
   ];

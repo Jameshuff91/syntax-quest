@@ -2,8 +2,13 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
+test('renders welcome message', () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  const heading = screen.getByText(/Welcome to Syntax Quest!/i);
+  const description = screen.getByText(/Embark on a journey to master JavaScript/i);
+  const button = screen.getByText(/Start Your Adventure/i);
+  
+  expect(heading).toBeInTheDocument();
+  expect(description).toBeInTheDocument();
+  expect(button).toBeInTheDocument();
 });

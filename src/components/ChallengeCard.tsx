@@ -96,7 +96,10 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSuccess, onS
 
   return (
     <div className="challenge-card" style={styles.card}>
-      <h2 style={styles.title} onClick={() => onSelect(challenge.id)}>{challenge.title}</h2>
+      <div style={styles.header}>
+        <h2 style={styles.title} onClick={() => onSelect(challenge.id)}>{challenge.title}</h2>
+        <span style={styles.difficultyBadge}>{challenge.difficulty}</span>
+      </div>
       <p style={styles.description}>{challenge.description}</p>
 
       <Editor 
@@ -151,10 +154,25 @@ const styles = {
     backgroundColor: '#fff',
     boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
   },
-  title: {
+  header: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: '15px',
+  },
+  title: {
     color: '#333',
     cursor: 'pointer',
+    margin: 0,
+  },
+  difficultyBadge: {
+    padding: '4px 8px',
+    borderRadius: '12px',
+    fontSize: '14px',
+    fontWeight: 'bold',
+    textTransform: 'capitalize' as React.CSSProperties['textTransform'],
+    backgroundColor: '#e0f7fa',
+    color: '#00796b',
   },
   description: {
     marginBottom: '20px',

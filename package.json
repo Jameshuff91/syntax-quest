@@ -21,15 +21,30 @@
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@babel/plugin-transform-class-static-block": "^7.26.0",
+    "canvas": "^2.11.2"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "jest --config=jest.config.js",
     "eject": "react-scripts eject"
   },
   "jest": {
+    "transform": {
+      "^.+\\.(js|jsx|ts|tsx)$": [
+        "babel-jest",
+        {
+          "presets": [
+            "react-app"
+          ],
+          "plugins": [
+            "@babel/plugin-transform-class-static-block"
+          ]
+        }
+      ]
+    },
     "transformIgnorePatterns": [
       "node_modules/(?!(react-monaco-editor|monaco-editor)/)"
     ],
