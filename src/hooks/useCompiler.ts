@@ -1,6 +1,6 @@
 // src/hooks/useCompiler.ts
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 interface CompileResult {
   success: boolean;
@@ -9,19 +9,26 @@ interface CompileResult {
 
 export const useCompiler = () => {
   const [result, setResult] = useState<CompileResult | null>(null);
+  const [worker, setWorker] = useState<Worker | null>(null);
 
-  const compile = (code: string) => {
-    try {
-      // Here, you can integrate a real compiler or use eval cautiously
-      // For simplicity, we'll use eval in this example
-      // In production, replace this with a secure method
-      // eslint-disable-next-line no-eval
-      const func = eval(code);
-      setResult({ success: true, output: "Code executed successfully." });
-    } catch (error: any) {
-      setResult({ success: false, output: error.message });
+  useEffect(() => {
+    const worker = new Worker(new URL('./compiler.worker.ts', import.meta.url));
+    setWorker(worker);
+
+    worker.onmessage = (event) => {
+      setResult(event.data);
+    };
+
+    return () => {
+      worker.terminate();
+    };
+  }, []);
+
+  const compile = useCallback((code: string) => {
+    if (worker) {
+      worker.postMessage({ code });
     }
-  };
+  }, [worker]);
 
   return { result, compile };
 };

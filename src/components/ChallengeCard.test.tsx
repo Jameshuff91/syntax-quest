@@ -1,9 +1,10 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import ChallengeCard from './ChallengeCard';
+import { Challenge } from '../data/challenges';
 
 describe('ChallengeCard component', () => {
-  const mockChallenge = {
+  const mockChallenge: Challenge = {
     id: 'test-challenge',
     title: 'Test Challenge',
     description: 'This is a test challenge',
