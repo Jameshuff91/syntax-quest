@@ -10,10 +10,12 @@ describe('ChallengeCard component', () => {
     description: 'This is a test challenge',
     difficulty: 'easy',
     realm: 'javascript',
-    starterCode: 'const x = 1;',
-    solutionCode: 'const x = 2;',
+    starterCode: '// Starter code',
+    solutionCode: '// Solution code',
     hints: [],
-    tests: []
+    tests: [],
+    currentAttempts: 0,
+    showSolution: false
   };
 
   const mockOnSelect = jest.fn();
