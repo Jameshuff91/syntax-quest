@@ -3,13 +3,15 @@ import { Link } from 'react-router-dom';
 
 const HomePage: React.FC = () => {
   return (
-    <div style={styles.container}>
+    <main style={styles.container}>
+      <nav>
       <h1>Welcome to Syntax Quest!</h1>
       <p>Embark on a journey to master JavaScript, TypeScript, and React.</p>
       <Link to="/realm/javascript">
         <button style={styles.button}>Start Your Adventure</button>
       </Link>
-    </div>
+      </nav>
+    </main>
   );
 };
 
