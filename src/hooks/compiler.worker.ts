@@ -1,6 +1,8 @@
 // src/hooks/compiler.worker.ts
 
-self.onmessage = (event) => {
+import { WorkerMessage, WorkerResponse } from './compiler.types';
+
+self.onmessage = (event: MessageEvent<WorkerMessage>) => {
   const { code } = event.data;
   
   // Set timeout for code execution (5 seconds)
@@ -27,11 +29,11 @@ self.onmessage = (event) => {
   Promise.race([executionPromise, timeoutPromise])
     .then((output) => {
       clearTimeout(timeoutId);
-      self.postMessage({ success: true, output });
+      self.postMessage({ success: true, output } as WorkerResponse);
     })
     .catch((error) => {
       clearTimeout(timeoutId);
-      self.postMessage({ success: false, output: error.message });
+      self.postMessage({ success: false, output: error.message } as WorkerResponse);
     });
 };
 

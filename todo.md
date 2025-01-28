@@ -1,10 +1,12 @@
 ### Recent Changes:
 - Added empty export statement to compiler.worker.ts to fix TypeScript isolatedModules error
+- Added type definitions for web worker messages in compiler.types.ts
+- Updated compiler.worker.ts and useCompiler.ts to use the new type definitions
 
 ### Next Steps:
-1. Verify that the TypeScript error is resolved
-2. Test the web worker functionality to ensure it still works as expected
-3. Consider adding type definitions for the worker messages for better type safety
+1. Test the web worker functionality to ensure it still works as expected
+2. Consider adding error boundaries around code execution
+3. Implement memory limits for code execution
 2. Implement difficulty-based styling in ChallengeCard
 3. Create filtering functionality based on difficulty
 4. Add tests for difficulty-related functionality

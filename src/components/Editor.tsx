@@ -6,6 +6,7 @@ import MonacoEditor from 'react-monaco-editor';
 interface EditorProps {
   code: string;
   onChange: (value: string) => void;
+  editorDidMount?: (editor: monaco.editor.IStandaloneCodeEditor) => void;
 }
 
 const Editor: React.FC<EditorProps> = ({ code, onChange }) => {

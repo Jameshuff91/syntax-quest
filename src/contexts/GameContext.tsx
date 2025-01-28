@@ -1,6 +1,6 @@
 // src/contexts/GameContext.tsx
 
-import React, { createContext, useState, ReactNode } from 'react';
+import React, { createContext, useState, useContext, ReactNode } from 'react';
 import { Challenge } from '../data/challenges';
 
 interface GameContextType {
@@ -40,3 +40,5 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     </GameContext.Provider>
   );
 };
+
+export const useGameContext = () => useContext(GameContext);

@@ -21,6 +21,8 @@ export interface Challenge {
     tests: TestCase[]; // For validation
     realm: string;
     difficulty: 'easy' | 'medium' | 'hard';
+    currentAttempts: number; // Track number of attempts
+    showSolution: boolean; // Whether to show the solution
   }
   
   export const challenges: Challenge[] = [
@@ -51,7 +53,9 @@ export interface Challenge {
         }
       ],
       realm: "javascript",
-      difficulty: "easy"
+      difficulty: "easy",
+      currentAttempts: 0,
+      showSolution: false
     },
     {
       id: "js-102",
@@ -87,7 +91,9 @@ export interface Challenge {
         }
       ],
       realm: "javascript",
-      difficulty: "easy"
+      difficulty: "easy",
+      currentAttempts: 0,
+      showSolution: false
     },
     {
       id: "js-103",
@@ -123,7 +129,9 @@ export interface Challenge {
         }
       ],
       realm: "javascript",
-      difficulty: "easy"
+      difficulty: "easy",
+      currentAttempts: 0,
+      showSolution: false
     },
     {
       id: "js-104",
@@ -159,7 +167,9 @@ export interface Challenge {
         }
       ],
       realm: "javascript",
-      difficulty: "easy"
+      difficulty: "easy",
+      currentAttempts: 0,
+      showSolution: false
     },
     {
       id: "js-105",
@@ -195,7 +205,9 @@ export interface Challenge {
         }
       ],
       realm: "javascript",
-      difficulty: "easy"
+      difficulty: "easy",
+      currentAttempts: 0,
+      showSolution: false
     },
     {
       id: "js-106",
@@ -231,7 +243,9 @@ export interface Challenge {
         }
       ],
       realm: "javascript",
-      difficulty: "easy"
+      difficulty: "easy",
+      currentAttempts: 0,
+      showSolution: false
     },
     {
       id: "js-107",
@@ -257,7 +271,9 @@ export interface Challenge {
         }
       ],
       realm: "javascript",
-      difficulty: "easy"
+      difficulty: "easy",
+      currentAttempts: 0,
+      showSolution: false
     },
     {
       id: "js-108",
@@ -285,7 +301,9 @@ count = 10;`,
         }
       ],
       realm: "javascript",
-      difficulty: "easy"
+      difficulty: "easy",
+      currentAttempts: 0,
+      showSolution: false
     },
     {
       id: "js-109",
@@ -321,7 +339,9 @@ count = 10;`,
         }
       ],
       realm: "javascript",
-      difficulty: "easy"
+      difficulty: "easy",
+      currentAttempts: 0,
+      showSolution: false
     },
     {
       id: "js-110",
@@ -368,7 +388,9 @@ count = 10;`,
         }
       ],
       realm: "javascript",
-      difficulty: "medium"
+      difficulty: "medium",
+      currentAttempts: 0,
+      showSolution: false
     },
     {
       id: "js-111",
@@ -414,7 +436,9 @@ count = 10;`,
         }
       ],
       realm: "javascript",
-      difficulty: "medium"
+      difficulty: "medium",
+      currentAttempts: 0,
+      showSolution: false
     },
     {
       id: "js-112",
@@ -462,7 +486,9 @@ count = 10;`,
         }
       ],
       realm: "javascript",
-      difficulty: "medium"
+      difficulty: "medium",
+      currentAttempts: 0,
+      showSolution: false
     },
     {
       id: "js-113",
@@ -497,7 +523,9 @@ count = 10;`,
         }
       ],
       realm: "javascript",
-      difficulty: "medium"
+      difficulty: "medium",
+      currentAttempts: 0,
+      showSolution: false
     },
     {
       id: "js-114",
@@ -528,7 +556,9 @@ count = 10;`,
         }
       ],
       realm: "javascript",
-      difficulty: "medium"
+      difficulty: "medium",
+      currentAttempts: 0,
+      showSolution: false
     },
     {
       id: "js-115",
@@ -559,7 +589,9 @@ count = 10;`,
         }
       ],
       realm: "javascript",
-      difficulty: "easy"
+      difficulty: "easy",
+      currentAttempts: 0,
+      showSolution: false
     },
     {
       id: "js-116",
@@ -593,7 +625,9 @@ count = 10;`,
         }
       ],
       realm: "javascript",
-      difficulty: "medium"
+      difficulty: "medium",
+      currentAttempts: 0,
+      showSolution: false
     },
     {
       id: "js-117",
@@ -630,7 +664,9 @@ count = 10;`,
         }
       ],
       realm: "javascript",
-      difficulty: "easy"
+      difficulty: "easy",
+      currentAttempts: 0,
+      showSolution: false
     },
     {
       id: "js-118",
@@ -659,7 +695,9 @@ count = 10;`,
         }
       ],
       realm: "javascript",
-      difficulty: "medium"
+      difficulty: "medium",
+      currentAttempts: 0,
+      showSolution: false
     },
     {
       id: "js-119",
@@ -692,7 +730,9 @@ count = 10;`,
         }
       ],
       realm: "javascript",
-      difficulty: "medium"
+      difficulty: "medium",
+      currentAttempts: 0,
+      showSolution: false
     },
     {
       id: "js-120",
@@ -718,8 +758,8 @@ count = 10;`,
         {
           message: "Throw an error when the divisor is zero.",
           revealCode: `if (b === 0) {
-            throw new Error('Division by zero');
-          }`
+          throw new Error('Division by zero');
+        }`
         }
       ],
       tests: [
@@ -735,6 +775,8 @@ count = 10;`,
         }
       ],
       realm: "javascript",
-      difficulty: "medium"
+      difficulty: "medium",
+      currentAttempts: 0,
+      showSolution: false
     },
-  ];    
+  ];

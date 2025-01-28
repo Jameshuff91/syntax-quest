@@ -4,6 +4,7 @@ import React, { useState, useContext, useCallback, useEffect } from 'react';
 import { Challenge } from '../data/challenges';
 import HintModal from './HintModal';
 import Editor from './Editor';
+import * as monaco from 'monaco-editor';
 import { runTests } from '../utils/challengeUtils';
 import { GameContext } from '../contexts/GameContext';
 
@@ -21,6 +22,7 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSuccess, onS
   const [resultMessage, setResultMessage] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [editorKey, setEditorKey] = useState<number>(0); // For forcing editor re-render
+  const [editorInstance, setEditorInstance] = useState<monaco.editor.IStandaloneCodeEditor | null>(null);
   const { addCompletedChallenge, incrementAttempt, attempts } = useContext(GameContext);
 
   // Reset state when challenge changes
@@ -106,6 +108,7 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSuccess, onS
         key={editorKey}
         code={userCode} 
         onChange={handleCodeChange}
+        editorDidMount={(editor) => setEditorInstance(editor as unknown as monaco.editor.IStandaloneCodeEditor)}
       />
 
       <div style={styles.buttonContainer}>

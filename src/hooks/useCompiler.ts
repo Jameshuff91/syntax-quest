@@ -1,21 +1,17 @@
 // src/hooks/useCompiler.ts
 
 import { useState, useEffect, useCallback } from 'react';
-
-interface CompileResult {
-  success: boolean;
-  output: string;
-}
+import { WorkerMessage, WorkerResponse } from './compiler.types';
 
 export const useCompiler = () => {
-  const [result, setResult] = useState<CompileResult | null>(null);
+  const [result, setResult] = useState<WorkerResponse | null>(null);
   const [worker, setWorker] = useState<Worker | null>(null);
 
   useEffect(() => {
     const worker = new Worker(new URL('./compiler.worker.ts', import.meta.url));
     setWorker(worker);
 
-    worker.onmessage = (event) => {
+    worker.onmessage = (event: MessageEvent<WorkerResponse>) => {
       setResult(event.data);
     };
 
@@ -26,7 +22,7 @@ export const useCompiler = () => {
 
   const compile = useCallback((code: string) => {
     if (worker) {
-      worker.postMessage({ code });
+      worker.postMessage({ code } as WorkerMessage);
     }
   }, [worker]);
 

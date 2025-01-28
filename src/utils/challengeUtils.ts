@@ -8,10 +8,10 @@ export interface TestResult {
   export function runTests(testCases: any[], userCode: string): TestResult {
     try {
       // Create a sandboxed function using Function constructor
-      const userFunction = new Function(`${userCode}; return hello;`)();
-      
+      const userFunction = new Function('context', `${userCode}; return hello;`)();
+
       for (let test of testCases) {
-        const result = userFunction(test.input);
+        const result = userFunction({ input: test.input });
         if (result !== test.expected) {
           return { success: false, message: `Test failed: ${test.description}. Expected "${test.expected}", but got "${result}".` };
         }
@@ -21,4 +21,3 @@ export interface TestResult {
       return { success: false, message: error.message };
     }
   }
-  

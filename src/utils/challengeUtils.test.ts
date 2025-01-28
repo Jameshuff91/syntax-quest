@@ -9,8 +9,8 @@ describe('challengeUtils', () => {
       }];
 
       const result = await runTests(
-        'return context.input[0];',
-        tests.map(t => ({...t, description: "Test case"}))
+        tests.map(t => ({...t, description: "Test case"})),
+        'return context.input[0];'
       );
       expect(result.success).toBe(true);
     });
@@ -23,8 +23,8 @@ describe('challengeUtils', () => {
       }];
 
       const result = await runTests(
-        'return new Promise(resolve => resolve(context.input[0]));',
-        tests.map(t => ({...t, description: "Async test case"}))
+        tests.map(t => ({...t, description: "Async test case"})),
+        'const capturedContext = context; return new Promise(resolve => resolve(capturedContext.input[0]));'
       );
       expect(result.success).toBe(true);
     });
@@ -37,8 +37,8 @@ describe('challengeUtils', () => {
       }];
 
       const result = await runTests(
-        'throw new Error("Test error");',
-        tests.map(t => ({...t, description: "Error test case"}))
+        tests.map(t => ({...t, description: "Error test case"})),
+        'throw new Error("Test error");'
       );
       expect(result.success).toBe(false);
       expect(result.message?.toLowerCase()).toContain('test error');
