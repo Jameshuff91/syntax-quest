@@ -1,17 +1,20 @@
 import React, { useContext, useState } from 'react';
+import { nextjsChallenges } from '../data/nextjsChallenges';
 import { useParams } from 'react-router-dom';
 import ChallengeCard from '../components/ChallengeCard';
 import { GameContext } from '../contexts/GameContext';
-import { challenges } from '../data/challenges';
-import { typescriptChallenges } from '../data/typescriptChallenges';
-import { reactChallenges } from '../data/reactChallenges';
 import Button from '@mui/material/Button';
 
 interface RealmPageProps {
   realmId?: string;
 }
 
-const RealmPage: React.FC<RealmPageProps> = ({ realmId: propRealmId }) => {
+
+interface RealmPageProps {
+  realmId?: string;
+}
+
+const NextjsRealmPage: React.FC<RealmPageProps> = ({ realmId: propRealmId }) => {
   const { realmId: paramRealmId } = useParams<{ realmId: string }>();
   const currentRealmId = propRealmId || paramRealmId;
   const { completedChallenges } = useContext(GameContext);
@@ -24,10 +27,10 @@ const RealmPage: React.FC<RealmPageProps> = ({ realmId: propRealmId }) => {
     setVisibleChallengeIndex(prevIndex => prevIndex + 1); // Move to the next challenge
   };
   
-  const challengeList = currentRealmId === 'typescript' ? typescriptChallenges : currentRealmId === 'react' ? reactChallenges : challenges;
+  const challengeList = nextjsChallenges;
 
   const realmChallenges = challengeList.filter(
-    challenge => challenge.realm === currentRealmId
+    challenge => challenge.category.toLowerCase() === 'next.js'
   );
 
   const handleSuccess = () => {
@@ -40,7 +43,7 @@ const RealmPage: React.FC<RealmPageProps> = ({ realmId: propRealmId }) => {
         index === visibleChallengeIndex && ( // Conditionally render based on index
           <ChallengeCard
             key={challenge.id}
-            challenge={challenge}
+            challenge={{ ...challenge, difficulty: 'easy' as 'easy' }}
             onSuccess={() => handleChallengeSuccess(challenge.id)}
             onSelect={(challengeId) => setSelectedChallenge(challengeId)}
           />
@@ -96,4 +99,4 @@ const styles = {
   },
 };
 
-export default RealmPage;
+export default NextjsRealmPage;

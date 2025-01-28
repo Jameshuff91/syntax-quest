@@ -151,9 +151,9 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSuccess, onS
 const styles = {
   card: {
     border: '1px solid #ccc',
-    padding: '20px',
+    padding: '10px',
     borderRadius: '8px',
-    marginBottom: '20px',
+    marginBottom: '10px',
     backgroundColor: '#fff',
     boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
   },
@@ -161,7 +161,7 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: '15px',
+    marginBottom: '7.5px',
   },
   title: {
     color: '#333',
@@ -178,8 +178,9 @@ const styles = {
     color: '#00796b',
   },
   description: {
-    marginBottom: '20px',
+    marginBottom: '10px',
     lineHeight: '1.5',
+    color: '#000', // Set text color to black
   },
   buttonContainer: {
     marginTop: '15px',
@@ -187,8 +188,8 @@ const styles = {
     justifyContent: 'center',
   },
   submitButton: {
-    marginTop: '10px',
-    padding: '10px 20px',
+    marginTop: '5px',
+    padding: '5px 20px',
     cursor: 'pointer',
     backgroundColor: '#4CAF50',
     color: 'white',
@@ -207,7 +208,7 @@ const styles = {
   successMessage: {
     color: '#4CAF50',
     fontWeight: 'bold',
-    marginTop: '10px',
+    marginTop: '5px',
   },
   errorMessage: {
     color: '#f44336',
@@ -216,7 +217,7 @@ const styles = {
   attempts: {
     color: '#666',
     fontSize: '14px',
-    marginTop: '10px',
+    marginTop: '5px',
   },
 };
 

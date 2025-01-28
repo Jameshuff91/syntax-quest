@@ -13,7 +13,7 @@ const HintModal: React.FC<HintModalProps> = ({ hint, onClose, onAcceptPartialCod
   return (
     <div className="hint-modal-backdrop" style={styles.backdrop}>
       <div className="hint-modal-content" style={styles.modal}>
-        <p>{hint.message}</p>
+        <p style={{ color: 'black' }}>{hint.message}</p>
         {hint.revealCode && (
           <div>
             <p>Need a bit more help? Click below to accept partial solution.</p>
