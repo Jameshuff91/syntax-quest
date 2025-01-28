@@ -36,3 +36,52 @@
     transform: rotate(360deg);
   }
 }
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #f0f0f0;
+}
+
+.header-title {
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.header-button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.header-button:hover {
+  background-color: #0056b3;
+}
+
+body {
+  background-color: #372c24; /* Dark earthy brown */
+  color: #eee; /* Light text for contrast */
+  font-family: ' medieval-font', sans-serif; /* Example medieval font - you might need to include a font file or use a web font */
+  background-image: linear-gradient(to bottom, #372c24, #28221e); /* Dark gradient background */
+  background-size: cover; /* Cover the entire background */
+  background-blend-mode: multiply; /* Blend background color and gradient */
+  background-repeat: repeat; /* Repeat background pattern */
+  /* Example texture using CSS gradients - you can adjust these to get a better texture */
+  background-image:
+    repeating-linear-gradient(45deg, #28221e 0, #28221e 2px, transparent 2px, transparent 4px),
+    linear-gradient(to bottom, #372c24, #28221e);
+}
+
+/* Example of a medieval font - you'd need to include this font in your project */
+@font-face {
+  font-family: 'medieval-font';
+  src: url('./fonts/MedievalSharp-Regular.ttf') format('truetype'); /* Path to your font file */
+  font-weight: normal;
+  font-style: normal;
+}

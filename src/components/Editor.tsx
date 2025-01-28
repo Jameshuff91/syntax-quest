@@ -18,7 +18,7 @@ const Editor: React.FC<EditorProps> = ({ code, onChange }) => {
 
   return (
     <MonacoEditor
-      width="800"
+      width="100%"
       height="400"
       language="javascript"
       theme="vs-dark"

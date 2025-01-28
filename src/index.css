@@ -5,9 +5,30 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #372c24; /* Dark earthy brown */
+  color: #eee; /* Light text for contrast */
+  font-family: ' medieval-font', sans-serif; /* Example medieval font - you might need to include a font file or use a web font */
+  background-image: url('https://i.imgur.com/5sEaEHL.jpg'); /* Replace with your D&D background image URL */
+  background-size: cover; /* Cover the entire background */
+  background-repeat: no-repeat; /* Prevent image from repeating */
+  background-attachment: fixed; /* Fixed background */
+  /* Example texture using CSS gradients - you can adjust these to get a better texture */
+  /* background-image:
+    repeating-linear-gradient(45deg, #28221e 0, #28221e 2px, transparent 2px, transparent 4px),
+    linear-gradient(to bottom, #372c24, #28221e); */
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* Example of a medieval font - you'd need to include this font in your project */
+/*
+@font-face {
+  font-family: 'medieval-font';
+  src: url('./fonts/MedievalSharp-Regular.ttf') format('truetype');  Path to your font file
+  font-weight: normal;
+  font-style: normal;
+}
+*/
