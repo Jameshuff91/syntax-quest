@@ -23,6 +23,8 @@ export interface Challenge {
     difficulty: 'easy' | 'medium' | 'hard';
     currentAttempts: number; // Track number of attempts
     showSolution: boolean; // Whether to show the solution
+    chainId?: string; // Optional chain ID for grouping challenges
+    dependsOn?: string; // Optional dependency on another challenge
   }
   
   export const challenges: Challenge[] = [
