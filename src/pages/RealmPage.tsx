@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ChallengeCard from '../components/ChallengeCard';
+import ErrorBoundary from '../components/ErrorBoundary';
 import { GameContext } from '../contexts/GameContext';
 import { challenges } from '../data/challenges';
 import { typescriptChallenges } from '../data/typescriptChallenges';
@@ -17,6 +18,7 @@ const RealmPage: React.FC<RealmPageProps> = ({ realmId: propRealmId }) => {
   const { completedChallenges } = useContext(GameContext);
   const [selectedChallenge, setSelectedChallenge] = useState<string | null>(null);
   const [visibleChallengeIndex, setVisibleChallengeIndex] = useState<number>(0);
+  const [difficultyFilter, setDifficultyFilter] = useState<'all' | 'easy' | 'medium' | 'hard'>('all');
 
   const handleChallengeSuccess = (challengeId: string) => {
     // Handle challenge success logic
@@ -27,8 +29,14 @@ const RealmPage: React.FC<RealmPageProps> = ({ realmId: propRealmId }) => {
   const challengeList = currentRealmId === 'typescript' ? typescriptChallenges : currentRealmId === 'react' ? reactChallenges : challenges;
 
   const realmChallenges = challengeList.filter(
-    challenge => challenge.realm === currentRealmId
+    challenge => challenge.realm === currentRealmId && 
+    (difficultyFilter === 'all' || challenge.difficulty === difficultyFilter)
   );
+
+  // Reset visible index when filter changes
+  React.useEffect(() => {
+    setVisibleChallengeIndex(0);
+  }, [difficultyFilter]);
 
   const handleSuccess = () => {
     // Additional success handling if needed
@@ -36,16 +44,65 @@ const RealmPage: React.FC<RealmPageProps> = ({ realmId: propRealmId }) => {
 
   return (
     <div style={styles.container}>
-      {realmChallenges.map((challenge, index) => (
+      <div style={styles.filterContainer}>
+        <h3 style={styles.filterTitle}>Filter by Difficulty:</h3>
+        <div style={styles.filterButtons}>
+          <button
+            style={{
+              ...styles.filterButton,
+              ...(difficultyFilter === 'all' ? styles.activeFilter : {})
+            }}
+            onClick={() => setDifficultyFilter('all')}
+          >
+            All
+          </button>
+          <button
+            style={{
+              ...styles.filterButton,
+              ...(difficultyFilter === 'easy' ? styles.activeFilterEasy : {})
+            }}
+            onClick={() => setDifficultyFilter('easy')}
+          >
+            Easy
+          </button>
+          <button
+            style={{
+              ...styles.filterButton,
+              ...(difficultyFilter === 'medium' ? styles.activeFilterMedium : {})
+            }}
+            onClick={() => setDifficultyFilter('medium')}
+          >
+            Medium
+          </button>
+          <button
+            style={{
+              ...styles.filterButton,
+              ...(difficultyFilter === 'hard' ? styles.activeFilterHard : {})
+            }}
+            onClick={() => setDifficultyFilter('hard')}
+          >
+            Hard
+          </button>
+        </div>
+      </div>
+      
+      {realmChallenges.length === 0 ? (
+        <div style={styles.noChallenges}>
+          <p>No challenges found for the selected difficulty level.</p>
+        </div>
+      ) : (
+        realmChallenges.map((challenge, index) => (
         index === visibleChallengeIndex && ( // Conditionally render based on index
-          <ChallengeCard
-            key={challenge.id}
-            challenge={challenge}
-            onSuccess={() => handleChallengeSuccess(challenge.id)}
-            onSelect={(challengeId) => setSelectedChallenge(challengeId)}
-          />
+          <ErrorBoundary key={challenge.id}>
+            <ChallengeCard
+              challenge={challenge}
+              onSuccess={() => handleChallengeSuccess(challenge.id)}
+              onSelect={(challengeId) => setSelectedChallenge(challengeId)}
+            />
+          </ErrorBoundary>
         )
-      ))}
+      ))
+      )}
       
       {completedChallenges.length > 0 && (
         <div style={styles.completed}>
@@ -77,11 +134,64 @@ const RealmPage: React.FC<RealmPageProps> = ({ realmId: propRealmId }) => {
   );
 };
 
-const styles = {
+const styles: Record<string, React.CSSProperties> = {
   container: {
     padding: '20px',
     maxWidth: '800px',
     margin: '0 auto',
+  },
+  filterContainer: {
+    marginBottom: '30px',
+    padding: '20px',
+    backgroundColor: '#f5f5f5',
+    borderRadius: '8px',
+  },
+  filterTitle: {
+    marginTop: 0,
+    marginBottom: '15px',
+    color: '#333',
+  },
+  filterButtons: {
+    display: 'flex',
+    gap: '10px',
+    flexWrap: 'wrap' as const,
+  },
+  filterButton: {
+    padding: '8px 16px',
+    border: '2px solid #ddd',
+    backgroundColor: 'white',
+    borderRadius: '6px',
+    cursor: 'pointer',
+    fontSize: '14px',
+    fontWeight: 'bold' as const,
+    transition: 'all 0.3s ease',
+  },
+  activeFilter: {
+    backgroundColor: '#2196F3',
+    color: 'white',
+    borderColor: '#2196F3',
+  },
+  activeFilterEasy: {
+    backgroundColor: '#4caf50',
+    color: 'white',
+    borderColor: '#4caf50',
+  },
+  activeFilterMedium: {
+    backgroundColor: '#ff9800',
+    color: 'white',
+    borderColor: '#ff9800',
+  },
+  activeFilterHard: {
+    backgroundColor: '#f44336',
+    color: 'white',
+    borderColor: '#f44336',
+  },
+  noChallenges: {
+    textAlign: 'center' as const,
+    padding: '40px',
+    backgroundColor: '#f9f9f9',
+    borderRadius: '8px',
+    color: '#666',
   },
   completed: {
     marginTop: '30px',

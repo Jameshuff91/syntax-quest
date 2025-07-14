@@ -1,34 +1,25 @@
+// src/pages/TestingRealmPage.tsx
+
 import React, { useContext, useState } from 'react';
-import { nextjsChallenges } from '../data/nextjsChallenges';
-import { useParams } from 'react-router-dom';
 import ChallengeCard from '../components/ChallengeCard';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { GameContext } from '../contexts/GameContext';
+import { testingChallenges } from '../data/testingChallenges';
 import Button from '@mui/material/Button';
 
-interface RealmPageProps {
-  realmId?: string;
-}
-
-const NextjsRealmPage: React.FC<RealmPageProps> = ({ realmId: propRealmId }) => {
-  const { realmId: paramRealmId } = useParams<{ realmId: string }>();
-  const currentRealmId = propRealmId || paramRealmId;
+const TestingRealmPage: React.FC = () => {
   const { completedChallenges } = useContext(GameContext);
   const [selectedChallenge, setSelectedChallenge] = useState<string | null>(null);
   const [visibleChallengeIndex, setVisibleChallengeIndex] = useState<number>(0);
   const [difficultyFilter, setDifficultyFilter] = useState<'all' | 'easy' | 'medium' | 'hard'>('all');
 
   const handleChallengeSuccess = (challengeId: string) => {
-    // Handle challenge success logic
     console.log(`Challenge ${challengeId} completed!`);
-    setVisibleChallengeIndex(prevIndex => prevIndex + 1); // Move to the next challenge
+    setVisibleChallengeIndex(prevIndex => prevIndex + 1);
   };
-  
-  const challengeList = nextjsChallenges;
 
-  const realmChallenges = challengeList.filter(
-    challenge => challenge.category.toLowerCase() === 'next.js' && 
-    (difficultyFilter === 'all' || challenge.difficulty === difficultyFilter)
+  const realmChallenges = testingChallenges.filter(
+    challenge => difficultyFilter === 'all' || challenge.difficulty === difficultyFilter
   );
 
   // Reset visible index when filter changes
@@ -36,12 +27,25 @@ const NextjsRealmPage: React.FC<RealmPageProps> = ({ realmId: propRealmId }) => 
     setVisibleChallengeIndex(0);
   }, [difficultyFilter]);
 
-  const handleSuccess = () => {
-    // Additional success handling if needed
-  };
-
   return (
     <div style={styles.container}>
+      <div style={styles.header}>
+        <h1 style={styles.title}>🧪 Testing Realm</h1>
+        <p style={styles.subtitle}>
+          Master the art of testing! Learn unit tests, integration tests, and test-driven development.
+        </p>
+      </div>
+
+      <div style={styles.infoBox}>
+        <h3>Why Testing Matters:</h3>
+        <ul>
+          <li>🛡️ <strong>Catch bugs early</strong> - Tests find problems before users do</li>
+          <li>📝 <strong>Document your code</strong> - Tests show how functions should work</li>
+          <li>🔄 <strong>Refactor safely</strong> - Tests ensure changes don't break things</li>
+          <li>💪 <strong>Build confidence</strong> - Well-tested code is reliable code</li>
+        </ul>
+      </div>
+
       <div style={styles.filterContainer}>
         <h3 style={styles.filterTitle}>Filter by Difficulty:</h3>
         <div style={styles.filterButtons}>
@@ -90,16 +94,16 @@ const NextjsRealmPage: React.FC<RealmPageProps> = ({ realmId: propRealmId }) => 
         </div>
       ) : (
         realmChallenges.map((challenge, index) => (
-        index === visibleChallengeIndex && ( // Conditionally render based on index
-          <ErrorBoundary key={challenge.id}>
-            <ChallengeCard
-              challenge={challenge}
-              onSuccess={() => handleChallengeSuccess(challenge.id)}
-              onSelect={(challengeId) => setSelectedChallenge(challengeId)}
-            />
-          </ErrorBoundary>
-        )
-      ))
+          index === visibleChallengeIndex && (
+            <ErrorBoundary key={challenge.id}>
+              <ChallengeCard
+                challenge={challenge}
+                onSuccess={() => handleChallengeSuccess(challenge.id)}
+                onSelect={(challengeId) => setSelectedChallenge(challengeId)}
+              />
+            </ErrorBoundary>
+          )
+        ))
       )}
       
       {completedChallenges.length > 0 && (
@@ -107,13 +111,14 @@ const NextjsRealmPage: React.FC<RealmPageProps> = ({ realmId: propRealmId }) => 
           <h3>Completed Challenges: {completedChallenges.length}</h3>
         </div>
       )}
-       <div style={styles.nextButtonContainer}>
+      
+      <div style={styles.nextButtonContainer}>
         {visibleChallengeIndex > 0 && (
           <Button
             variant="contained"
             color="primary"
             onClick={() => setVisibleChallengeIndex(prevIndex => prevIndex - 1)}
-            style={{ marginRight: '10px' }} // Add some right margin
+            style={{ marginRight: '10px' }}
           >
             Previous Challenge
           </Button>
@@ -137,6 +142,26 @@ const styles: Record<string, React.CSSProperties> = {
     padding: '20px',
     maxWidth: '800px',
     margin: '0 auto',
+  },
+  header: {
+    textAlign: 'center' as const,
+    marginBottom: '30px',
+  },
+  title: {
+    fontSize: '2.5em',
+    marginBottom: '10px',
+    color: '#333',
+  },
+  subtitle: {
+    fontSize: '1.2em',
+    color: '#666',
+  },
+  infoBox: {
+    backgroundColor: '#e3f2fd',
+    padding: '20px',
+    borderRadius: '8px',
+    marginBottom: '30px',
+    border: '2px solid #2196f3',
   },
   filterContainer: {
     marginBottom: '30px',
@@ -204,4 +229,4 @@ const styles: Record<string, React.CSSProperties> = {
   },
 };
 
-export default NextjsRealmPage;
+export default TestingRealmPage;

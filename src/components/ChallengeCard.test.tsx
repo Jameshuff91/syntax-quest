@@ -2,6 +2,10 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import ChallengeCard from './ChallengeCard';
 import { Challenge } from '../data/challenges';
+import { GameProvider } from '../contexts/GameContext';
+
+// Mock the useCompiler hook
+jest.mock('../hooks/useCompiler');
 
 describe('ChallengeCard component', () => {
   const mockChallenge: Challenge = {
@@ -22,11 +26,13 @@ describe('ChallengeCard component', () => {
 
   it('renders challenge title and description', () => {
     render(
-      <ChallengeCard 
-        challenge={mockChallenge}
-        onSelect={mockOnSelect}
-        onSuccess={() => {}}
-      />
+      <GameProvider>
+        <ChallengeCard 
+          challenge={mockChallenge}
+          onSelect={mockOnSelect}
+          onSuccess={() => {}}
+        />
+      </GameProvider>
     );
     
     expect(screen.getByText('Test Challenge')).toBeInTheDocument();
@@ -35,11 +41,13 @@ describe('ChallengeCard component', () => {
 
   it('renders difficulty badge', () => {
     render(
-      <ChallengeCard 
-        challenge={mockChallenge}
-        onSelect={mockOnSelect}
-        onSuccess={() => {}}
-      />
+      <GameProvider>
+        <ChallengeCard 
+          challenge={mockChallenge}
+          onSelect={mockOnSelect}
+          onSuccess={() => {}}
+        />
+      </GameProvider>
     );
     
     expect(screen.getByText('easy')).toBeInTheDocument();
@@ -47,11 +55,13 @@ describe('ChallengeCard component', () => {
 
   it('calls onSelect when clicked', () => {
     render(
-      <ChallengeCard 
-        challenge={mockChallenge}
-        onSelect={mockOnSelect}
-        onSuccess={() => {}}
-      />
+      <GameProvider>
+        <ChallengeCard 
+          challenge={mockChallenge}
+          onSelect={mockOnSelect}
+          onSuccess={() => {}}
+        />
+      </GameProvider>
     );
     
     screen.getByText('Test Challenge').click();

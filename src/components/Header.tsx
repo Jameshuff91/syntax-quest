@@ -17,14 +17,21 @@ const Header: React.FC = () => {
   return (
     <AppBar position="static" color="primary">
       <Toolbar style={{justifyContent: 'space-between'}}>
-        <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Syntax Quest
-          </Typography>
-        </Link>
-        <Button color="inherit" onClick={toggleSignIn}>
-          {isSignedIn ? 'Sign Out' : 'Sign In'}
-        </Button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+          <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <Typography variant="h6" component="div">
+              Syntax Quest
+            </Typography>
+          </Link>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <Link to="/progress" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <Button color="inherit">📊 Progress</Button>
+          </Link>
+          <Button color="inherit" onClick={toggleSignIn}>
+            {isSignedIn ? 'Sign Out' : 'Sign In'}
+          </Button>
+        </div>
       </Toolbar>
     </AppBar>
   );

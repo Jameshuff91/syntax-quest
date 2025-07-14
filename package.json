@@ -25,8 +25,7 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "@babel/plugin-transform-class-static-block": "^7.26.0",
-    "canvas": "^2.11.2"
+    "@babel/plugin-transform-class-static-block": "^7.26.0"
   },
   "scripts": {
     "start": "react-scripts start",

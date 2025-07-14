@@ -5,7 +5,7 @@ import { Challenge } from '../data/challenges';
 import HintModal from './HintModal';
 import Editor from './Editor';
 import * as monaco from 'monaco-editor';
-import { runTests } from '../utils/challengeUtils';
+import { useCompiler } from '../hooks/useCompiler';
 import { GameContext } from '../contexts/GameContext';
 
 interface ChallengeCardProps {
@@ -24,6 +24,40 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSuccess, onS
   const [editorKey, setEditorKey] = useState<number>(0); // For forcing editor re-render
   const [editorInstance, setEditorInstance] = useState<monaco.editor.IStandaloneCodeEditor | null>(null);
   const { addCompletedChallenge, incrementAttempt, attempts } = useContext(GameContext);
+  const isTestingRealm = challenge.realm === 'testing';
+  const { compile, result: compileResult, isLoading: isCompiling } = useCompiler(isTestingRealm);
+
+  // Get difficulty-based colors
+  const getDifficultyColors = (difficulty: string) => {
+    switch (difficulty) {
+      case 'easy':
+        return {
+          backgroundColor: '#e8f5e9',
+          color: '#2e7d32',
+          borderColor: '#4caf50'
+        };
+      case 'medium':
+        return {
+          backgroundColor: '#fff3e0',
+          color: '#ef6c00',
+          borderColor: '#ff9800'
+        };
+      case 'hard':
+        return {
+          backgroundColor: '#ffebee',
+          color: '#c62828',
+          borderColor: '#f44336'
+        };
+      default:
+        return {
+          backgroundColor: '#e0f7fa',
+          color: '#00796b',
+          borderColor: '#4dd0e1'
+        };
+    }
+  };
+
+  const difficultyColors = getDifficultyColors(challenge.difficulty);
 
   // Reset state when challenge changes
   useEffect(() => {
@@ -35,46 +69,42 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSuccess, onS
     setEditorKey(prev => prev + 1);
   }, [challenge.id]);
 
-  // Handle code submission
-  const handleSubmit = useCallback(async () => {
-    if (isSubmitting) return;
+  // Handle compilation results
+  useEffect(() => {
+    if (!compileResult || !isSubmitting) return;
 
-    try {
-      setIsSubmitting(true);
-      setResultMessage('Testing your code...');
-
-      const testResult = runTests(challenge.tests, userCode);
-
-      if (testResult.success) {
-        setResultMessage('Success! You solved it! 🎉');
-        addCompletedChallenge(challenge.id);
-        onSuccess();
-      } else {
-        setResultMessage(`Incorrect. Try again! ${testResult.message || ''}`);
-        incrementAttempt(challenge.id);
-        const nextHint = currentHint + 1;
-        if (nextHint <= challenge.hints.length) {
-          setCurrentHint(nextHint);
-          setShowHint(true);
-          
-          if (attempts[challenge.id] >= 4) { // Check for 5th attempt (since attempts start at 0)
-            setUserCode(challenge.solutionCode);
-            setEditorKey(prev => prev + 1);
-            setResultMessage("Here's the solution after 5 attempts. Study it and try to understand how it works!");
-            return;
-          }
+    if (compileResult.success) {
+      setResultMessage('Success! You solved it! 🎉');
+      addCompletedChallenge(challenge.id);
+      onSuccess();
+    } else {
+      setResultMessage(`Incorrect. Try again! ${compileResult.output || ''}`);
+      incrementAttempt(challenge.id);
+      const nextHint = currentHint + 1;
+      if (nextHint <= challenge.hints.length) {
+        setCurrentHint(nextHint);
+        setShowHint(true);
+        
+        if (attempts[challenge.id] >= 4) { // Check for 5th attempt (since attempts start at 0)
+          setUserCode(challenge.solutionCode);
+          setEditorKey(prev => prev + 1);
+          setResultMessage("Here's the solution after 5 attempts. Study it and try to understand how it works!");
         }
       }
-    } catch (error) {
-      if (error instanceof Error) {
-        setResultMessage(`Error running tests: ${error.message}`);
-      } else {
-        setResultMessage(`Error running tests: ${String(error)}`);
-      }
-    } finally {
-      setIsSubmitting(false);
     }
-  }, [userCode, challenge, currentHint, isSubmitting, addCompletedChallenge, incrementAttempt, onSuccess]);
+    setIsSubmitting(false);
+  }, [compileResult, isSubmitting, challenge.id, addCompletedChallenge, onSuccess, incrementAttempt, currentHint, challenge.hints.length, challenge.solutionCode, attempts]);
+
+  // Handle code submission
+  const handleSubmit = useCallback(async () => {
+    if (isSubmitting || isCompiling) return;
+
+    setIsSubmitting(true);
+    setResultMessage('Testing your code...');
+    
+    // Use the secure sandbox to run tests
+    compile(userCode, challenge.tests, 5000);
+  }, [userCode, challenge.tests, isSubmitting, isCompiling, compile]);
 
   // Handle partial code acceptance
   const handleAcceptPartialCode = useCallback(() => {
@@ -97,10 +127,18 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSuccess, onS
   }, []);
 
   return (
-    <div className="challenge-card" style={styles.card}>
+    <div className="challenge-card" style={{
+      ...styles.card,
+      borderColor: difficultyColors.borderColor,
+      borderWidth: '2px'
+    }}>
       <div style={styles.header}>
         <h2 style={styles.title} onClick={() => onSelect(challenge.id)}>{challenge.title}</h2>
-        <span style={styles.difficultyBadge}>{challenge.difficulty}</span>
+        <span style={{
+          ...styles.difficultyBadge,
+          backgroundColor: difficultyColors.backgroundColor,
+          color: difficultyColors.color
+        }}>{challenge.difficulty}</span>
       </div>
       <p style={styles.description}>{challenge.description}</p>
 

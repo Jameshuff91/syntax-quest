@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`HintModal Component - Complete Testing Guide Snapshot Tests matches snapshot with all props 1`] = `
+<div
+  class="hint-modal-backdrop"
+  style="position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); display: flex; justify-content: center; align-items: center; z-index: 1000;"
+>
+  <div
+    class="hint-modal-content"
+    style="background-color: rgb(255, 255, 255); padding: 20px; border-radius: 8px; width: 400px; text-align: center;"
+  >
+    <p
+      style="color: black;"
+    >
+      This is a helpful hint
+    </p>
+    <div>
+      <p>
+        Need a bit more help? Click below to accept partial solution.
+      </p>
+      <button
+        style="margin-top: 10px; padding: 10px 20px; cursor: pointer;"
+      >
+        Accept Partial Code
+      </button>
+    </div>
+    <button
+      style="margin-top: 10px; padding: 10px 20px; cursor: pointer;"
+    >
+      Close
+    </button>
+  </div>
+</div>
+`;
+
+exports[`HintModal Component - Complete Testing Guide Snapshot Tests matches snapshot without reveal code 1`] = `
+<div
+  class="hint-modal-backdrop"
+  style="position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); display: flex; justify-content: center; align-items: center; z-index: 1000;"
+>
+  <div
+    class="hint-modal-content"
+    style="background-color: rgb(255, 255, 255); padding: 20px; border-radius: 8px; width: 400px; text-align: center;"
+  >
+    <p
+      style="color: black;"
+    >
+      No code hint
+    </p>
+    <button
+      style="margin-top: 10px; padding: 10px 20px; cursor: pointer;"
+    >
+      Close
+    </button>
+  </div>
+</div>
+`;
