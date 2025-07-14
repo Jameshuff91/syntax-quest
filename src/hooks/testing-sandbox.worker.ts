@@ -14,6 +14,13 @@ function createTestingSandbox(code: string, tests: TestCase[], timeout: number =
         code.includes('console.log')
       );
       
+      // For debugging challenges that need to return values
+      const isDebuggingChallenge = code.includes('// TODO:') && (
+        code.includes('trace') || 
+        code.includes('Debug') ||
+        code.includes('fix')
+      );
+      
       // Create a limited scope with only safe globals
       const limitedScope = `
         // Capture console.log output

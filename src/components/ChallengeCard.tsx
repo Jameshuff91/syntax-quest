@@ -24,7 +24,7 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSuccess, onS
   const [editorKey, setEditorKey] = useState<number>(0); // For forcing editor re-render
   const [editorInstance, setEditorInstance] = useState<monaco.editor.IStandaloneCodeEditor | null>(null);
   const { addCompletedChallenge, incrementAttempt, attempts } = useContext(GameContext);
-  const isTestingRealm = challenge.realm === 'testing';
+  const isTestingRealm = challenge.realm === 'testing' || challenge.realm === 'debugging';
   const { compile, result: compileResult, isLoading: isCompiling } = useCompiler(isTestingRealm);
 
   // Get difficulty-based colors

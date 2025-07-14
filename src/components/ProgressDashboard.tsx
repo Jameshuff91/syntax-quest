@@ -6,6 +6,7 @@ import { challenges } from '../data/challenges';
 import { typescriptChallenges } from '../data/typescriptChallenges';
 import { reactChallenges } from '../data/reactChallenges';
 import { testingChallenges } from '../data/testingChallenges';
+import { debuggingChallenges } from '../data/debuggingChallenges';
 
 interface RealmProgress {
   realm: string;
@@ -24,7 +25,8 @@ const ProgressDashboard: React.FC = () => {
     ...challenges,
     ...typescriptChallenges,
     ...reactChallenges,
-    ...testingChallenges
+    ...testingChallenges,
+    ...debuggingChallenges
   ];
   
   // Calculate progress by realm
@@ -48,6 +50,11 @@ const ProgressDashboard: React.FC = () => {
       realm: 'testing',
       icon: '🧪',
       color: '#9c27b0'
+    },
+    {
+      realm: 'debugging',
+      icon: '🐛',
+      color: '#ff5722'
     }
   ].map(realm => {
     const realmChallenges = allChallenges.filter(c => c.realm === realm.realm);

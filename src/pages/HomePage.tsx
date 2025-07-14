@@ -6,7 +6,7 @@ const HomePage: React.FC = () => {
     <main style={styles.container}>
       
       <h1>Welcome to Syntax Quest!</h1>
-      <p>Embark on a journey to master JavaScript, TypeScript, React, and Testing!</p>
+      <p>Embark on a journey to master JavaScript, TypeScript, React, Testing, and Debugging!</p>
       <div style={styles.buttonGrid}>
         <Link to="/realm/javascript">
           <button style={styles.adventureButton}>Start Javascript Adventure</button>
@@ -22,6 +22,9 @@ const HomePage: React.FC = () => {
         </Link>
         <Link to="/realm/testing">
           <button style={{...styles.adventureButton, backgroundColor: '#9c27b0'}}>🧪 Start Testing Adventure</button>
+        </Link>
+        <Link to="/realm/debugging">
+          <button style={{...styles.adventureButton, backgroundColor: '#ff5722'}}>🐛 Start Debugging Adventure</button>
         </Link>
       </div>
       <div style={styles.movingBar}></div>
