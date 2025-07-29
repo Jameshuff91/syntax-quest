@@ -66,14 +66,14 @@ variable "app_name" {
 
 # outputs.tf
 output "app_identifier" {
-  value = "${var.app_name}-${var.environment}"
+  value = "\${var.app_name}-\${var.environment}"
 }`,
     hints: [
       {
         message: "Variables allow you to parameterize your configuration"
       },
       {
-        message: "Use ${var.variable_name} to reference variables",
+        message: "Use \\${var.variable_name} to reference variables",
         revealCode: `variable "environment" {
   default = "dev"
 }`
@@ -109,7 +109,7 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "app_bucket" {
-  bucket = "${var.project_name}-${var.environment}-bucket"
+  bucket = "\${var.project_name}-\${var.environment}-bucket"
 
   tags = {
     Environment = var.environment
@@ -124,7 +124,7 @@ resource "aws_s3_bucket" "app_bucket" {
       {
         message: "Always tag your resources for better organization",
         revealCode: `resource "aws_s3_bucket" "app_bucket" {
-  bucket = "${var.project_name}-${var.environment}-bucket"
+  bucket = "\${var.project_name}-\${var.environment}-bucket"
 }`
       }
     ],

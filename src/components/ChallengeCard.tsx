@@ -28,7 +28,7 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSuccess, onS
   const [editorInstance, setEditorInstance] = useState<monaco.editor.IStandaloneCodeEditor | null>(null);
   const [showSuccess, setShowSuccess] = useState<boolean>(false);
   const [successData, setSuccessData] = useState<{ points: number; streak: number; perfectSolve: boolean }>({ points: 0, streak: 0, perfectSolve: false });
-  const { addCompletedChallenge, incrementAttempt, attempts, gameStats } = useContext(GameContext);
+  const { addCompletedChallenge, incrementAttempt, attempts, gameStats, powerUps, useHintToken, useSkipToken, addPowerUp } = useContext(GameContext);
   const isTestingRealm = challenge.realm === 'testing' || challenge.realm === 'debugging';
   const { compile, result: compileResult, isLoading: isCompiling } = useCompiler(isTestingRealm);
 
@@ -181,6 +181,36 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSuccess, onS
         >
           {isSubmitting ? 'Testing...' : 'Submit'}
         </button>
+        
+        {powerUps.hintTokens > 0 && currentHint < challenge.hints.length && (
+          <button
+            onClick={() => {
+              if (useHintToken()) {
+                setCurrentHint(prev => Math.min(prev + 1, challenge.hints.length));
+                setShowHint(true);
+              }
+            }}
+            style={styles.hintButton}
+          >
+            🐡 Use Hint ({powerUps.hintTokens} left)
+          </button>
+        )}
+        
+        {powerUps.skipTokens > 0 && (
+          <button
+            onClick={() => {
+              if (useSkipToken()) {
+                // Award partial XP for skipping
+                const partialAttempts = 5; // Treat as 5 attempts for XP calculation
+                addCompletedChallenge(challenge.id, partialAttempts, challenge.difficulty);
+                onSuccess();
+              }
+            }}
+            style={styles.skipButton}
+          >
+            ⏭️ Skip Challenge ({powerUps.skipTokens} left)
+          </button>
+        )}
       </div>
 
       {resultMessage && (
@@ -257,6 +287,8 @@ const styles = {
     marginTop: '15px',
     display: 'flex',
     justifyContent: 'center',
+    gap: '10px',
+    flexWrap: 'wrap' as const,
   },
   submitButton: {
     marginTop: '5px',
@@ -289,6 +321,32 @@ const styles = {
     color: '#666',
     fontSize: '14px',
     marginTop: '5px',
+  },
+  hintButton: {
+    padding: '5px 15px',
+    cursor: 'pointer',
+    backgroundColor: '#2196F3',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    fontSize: '14px',
+    transition: 'background-color 0.3s',
+    ':hover': {
+      backgroundColor: '#1976D2',
+    },
+  },
+  skipButton: {
+    padding: '5px 15px',
+    cursor: 'pointer',
+    backgroundColor: '#FF9800',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    fontSize: '14px',
+    transition: 'background-color 0.3s',
+    ':hover': {
+      backgroundColor: '#F57C00',
+    },
   },
 };
 

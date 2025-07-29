@@ -17,31 +17,32 @@ const Header: React.FC = () => {
   };
 
   return (
-    <AppBar position="static" color="primary">
-      <Toolbar style={{justifyContent: 'space-between'}}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-          <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-            <Typography variant="h6" component="div">
-              Syntax Quest
-            </Typography>
-          </Link>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <Link to="/progress" style={{ textDecoration: 'none', color: 'inherit' }}>
-            <Button color="inherit">📊 Progress</Button>
-          </Link>
-          <Button color="inherit" onClick={() => setShowLeaderboard(true)}>
-            🏆 Leaderboard
-          </Button>
-          <Button color="inherit" onClick={toggleSignIn}>
-            {isSignedIn ? 'Sign Out' : 'Sign In'}
-          </Button>
-        </div>
-      </Toolbar>
-    </AppBar>
-    {showLeaderboard && (
-      <Leaderboard onClose={() => setShowLeaderboard(false)} />
-    )}
+    <>
+      <AppBar position="static" color="primary">
+        <Toolbar style={{justifyContent: 'space-between'}}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+            <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+              <Typography variant="h6" component="div">
+                Syntax Quest
+              </Typography>
+            </Link>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <Link to="/progress" style={{ textDecoration: 'none', color: 'inherit' }}>
+              <Button color="inherit">📊 Progress</Button>
+            </Link>
+            <Button color="inherit" onClick={() => setShowLeaderboard(true)}>
+              🏆 Leaderboard
+            </Button>
+            <Button color="inherit" onClick={toggleSignIn}>
+              {isSignedIn ? 'Sign Out' : 'Sign In'}
+            </Button>
+          </div>
+        </Toolbar>
+      </AppBar>
+      {showLeaderboard && (
+        <Leaderboard onClose={() => setShowLeaderboard(false)} />
+      )}
     </>
   );
 };

@@ -91,7 +91,7 @@ describe('ErrorBoundary component', () => {
 
   it('resets error state when "Try again" is clicked', async () => {
     // This test demonstrates async user interactions
-    const user = userEvent.setup();
+    // Using userEvent without setup for compatibility with v13
     
     // ARRANGE: Create a component that we can control
     const { rerender } = render(
@@ -104,7 +104,7 @@ describe('ErrorBoundary component', () => {
     expect(screen.getByText('Something went wrong')).toBeInTheDocument();
     
     // ACT: Click the "Try again" button
-    await user.click(screen.getByText('Try again'));
+    await userEvent.click(screen.getByText('Try again'));
     
     // Re-render with no error
     rerender(

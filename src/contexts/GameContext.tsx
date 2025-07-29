@@ -24,6 +24,13 @@ interface GameStats {
   perfectSolves: number;
 }
 
+interface PowerUps {
+  hintTokens: number;
+  skipTokens: number;
+  doubleXPActive: boolean;
+  doubleXPExpiry?: Date;
+}
+
 interface LeaderboardEntry {
   id: string;
   name: string;
@@ -47,6 +54,10 @@ interface GameContextType {
   addLeaderboardEntry: (name: string) => void;
   playerName: string;
   setPlayerName: (name: string) => void;
+  powerUps: PowerUps;
+  useHintToken: () => boolean;
+  useSkipToken: () => boolean;
+  addPowerUp: (type: 'hint' | 'skip' | 'doubleXP', quantity?: number) => void;
 }
 
 const defaultAchievements: Achievement[] = [
@@ -71,6 +82,12 @@ const defaultGameStats: GameStats = {
   perfectSolves: 0,
 };
 
+const defaultPowerUps: PowerUps = {
+  hintTokens: 3, // Start with 3 free hints
+  skipTokens: 1, // Start with 1 skip
+  doubleXPActive: false,
+};
+
 export const GameContext = createContext<GameContextType>({
   completedChallenges: [],
   addCompletedChallenge: () => {},
@@ -84,6 +101,10 @@ export const GameContext = createContext<GameContextType>({
   addLeaderboardEntry: () => {},
   playerName: '',
   setPlayerName: () => {},
+  powerUps: defaultPowerUps,
+  useHintToken: () => false,
+  useSkipToken: () => false,
+  addPowerUp: () => {},
 });
 
 export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -93,25 +114,35 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [achievements, setAchievements] = useState<Achievement[]>(defaultAchievements);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [playerName, setPlayerName] = useState<string>('');
+  const [powerUps, setPowerUps] = useState<PowerUps>(defaultPowerUps);
 
-  // Load leaderboard from localStorage on mount
+  // Load data from localStorage on mount
   useEffect(() => {
     const savedLeaderboard = localStorage.getItem('syntaxQuestLeaderboard');
     const savedPlayerName = localStorage.getItem('syntaxQuestPlayerName');
+    const savedPowerUps = localStorage.getItem('syntaxQuestPowerUps');
+    
     if (savedLeaderboard) {
       setLeaderboard(JSON.parse(savedLeaderboard));
     }
     if (savedPlayerName) {
       setPlayerName(savedPlayerName);
     }
+    if (savedPowerUps) {
+      setPowerUps(JSON.parse(savedPowerUps));
+    }
   }, []);
 
-  // Save leaderboard to localStorage whenever it changes
+  // Save data to localStorage whenever it changes
   useEffect(() => {
     if (leaderboard.length > 0) {
       localStorage.setItem('syntaxQuestLeaderboard', JSON.stringify(leaderboard));
     }
   }, [leaderboard]);
+  
+  useEffect(() => {
+    localStorage.setItem('syntaxQuestPowerUps', JSON.stringify(powerUps));
+  }, [powerUps]);
 
   const calculatePoints = (difficulty: string, attempts: number): number => {
     const basePoints = { easy: 100, medium: 200, hard: 300 }[difficulty] || 100;
@@ -178,6 +209,16 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       
       if (leveledUp) {
         soundManager.playLevelUp();
+        
+        // Award power-ups on level up
+        if (newLevel % 2 === 0) {
+          // Every even level gives a hint token
+          setPowerUps(prev => ({ ...prev, hintTokens: prev.hintTokens + 1 }));
+        }
+        if (newLevel % 5 === 0) {
+          // Every 5 levels gives a skip token
+          setPowerUps(prev => ({ ...prev, skipTokens: prev.skipTokens + 1 }));
+        }
       }
       
       const newStreak = challengeAttempts === 1 ? prevStats.streak + 1 : 0;
@@ -256,6 +297,42 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     localStorage.setItem('syntaxQuestPlayerName', name);
   };
 
+  const useHintToken = (): boolean => {
+    if (powerUps.hintTokens > 0) {
+      setPowerUps(prev => ({ ...prev, hintTokens: prev.hintTokens - 1 }));
+      soundManager.playClick();
+      return true;
+    }
+    return false;
+  };
+
+  const useSkipToken = (): boolean => {
+    if (powerUps.skipTokens > 0) {
+      setPowerUps(prev => ({ ...prev, skipTokens: prev.skipTokens - 1 }));
+      soundManager.playSuccess();
+      return true;
+    }
+    return false;
+  };
+
+  const addPowerUp = (type: 'hint' | 'skip' | 'doubleXP', quantity: number = 1) => {
+    setPowerUps(prev => {
+      switch (type) {
+        case 'hint':
+          return { ...prev, hintTokens: prev.hintTokens + quantity };
+        case 'skip':
+          return { ...prev, skipTokens: prev.skipTokens + quantity };
+        case 'doubleXP':
+          const expiry = new Date();
+          expiry.setHours(expiry.getHours() + 1); // 1 hour double XP
+          return { ...prev, doubleXPActive: true, doubleXPExpiry: expiry };
+        default:
+          return prev;
+      }
+    });
+    soundManager.playAchievement();
+  };
+
   return (
     <GameContext.Provider
       value={{ 
@@ -271,6 +348,10 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         addLeaderboardEntry,
         playerName,
         setPlayerName,
+        powerUps,
+        useHintToken,
+        useSkipToken,
+        addPowerUp,
       }}
     >
       {children}
