@@ -265,7 +265,7 @@ function processArray(arr, callback) {
     tests: [
       {
         description: "Should use callback to process array",
-        input: [[1, 2, 3], function(x) { return x * 2; }],
+        input: [[1, 2, 3], function(x: number) { return x * 2; }],
         expected: [2, 4, 6]
       }
     ],

@@ -1,14 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
 import Leaderboard from './Leaderboard';
+import UserProfile from './UserProfile';
+import { GameContext } from '../contexts/GameContext';
 
 const Header: React.FC = () => {
+  const { playerAvatar } = useContext(GameContext);
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
+  
+  const avatars: { [key: string]: string } = {
+    'ninja': '🥷',
+    'wizard': '🧙‍♂️',
+    'robot': '🤖',
+    'alien': '👽',
+    'astronaut': '👨‍🚀',
+    'detective': '🕵️',
+    'superhero': '🦸',
+    'pirate': '🏴‍☠️',
+    'unicorn': '🦄',
+    'dragon': '🐉',
+  };
 
   const toggleSignIn = () => {
     setIsSignedIn(!isSignedIn);
@@ -34,6 +51,13 @@ const Header: React.FC = () => {
             <Button color="inherit" onClick={() => setShowLeaderboard(true)}>
               🏆 Leaderboard
             </Button>
+            <Button 
+              color="inherit" 
+              onClick={() => setShowProfile(true)}
+              style={{ fontSize: '20px', minWidth: '48px' }}
+            >
+              {avatars[playerAvatar] || '🥷'}
+            </Button>
             <Button color="inherit" onClick={toggleSignIn}>
               {isSignedIn ? 'Sign Out' : 'Sign In'}
             </Button>
@@ -42,6 +66,9 @@ const Header: React.FC = () => {
       </AppBar>
       {showLeaderboard && (
         <Leaderboard onClose={() => setShowLeaderboard(false)} />
+      )}
+      {showProfile && (
+        <UserProfile onClose={() => setShowProfile(false)} />
       )}
     </>
   );

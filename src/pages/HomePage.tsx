@@ -1,21 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import GameStats from '../components/GameStats';
 import Achievements from '../components/Achievements';
 import RealmProgress from '../components/RealmProgress';
 import Leaderboard from '../components/Leaderboard';
 import DailyChallenge from '../components/DailyChallenge';
+import PowerUpsDisplay from '../components/PowerUpsDisplay';
+import { GameContext } from '../contexts/GameContext';
 
 const HomePage: React.FC = () => {
+  const { playerName } = useContext(GameContext);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
 
   return (
     <main style={styles.container}>
       
-      <h1>Welcome to Syntax Quest!</h1>
+      <h1>Welcome to Syntax Quest{playerName ? `, ${playerName}` : ''}!</h1>
       <p>Embark on a journey to master JavaScript, TypeScript, React, Testing, and Debugging!</p>
       
       <GameStats />
+      <PowerUpsDisplay />
       <DailyChallenge />
       <RealmProgress />
       <Achievements />

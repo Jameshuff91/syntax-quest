@@ -129,8 +129,7 @@ describe('HintModal Component - Complete Testing Guide', () => {
    */
   describe('User Interactions', () => {
     it('calls onClose when close button is clicked', async () => {
-      // Setup userEvent for more realistic interactions
-      const user = userEvent.setup();
+      // Using userEvent without setup for compatibility with v13
       
       render(
         <HintModal 
@@ -142,7 +141,7 @@ describe('HintModal Component - Complete Testing Guide', () => {
       
       // Find and click the close button
       const closeButton = screen.getByText('×');
-      await user.click(closeButton);
+      await userEvent.click(closeButton);
       
       // Assert the callback was called
       expect(mockOnClose).toHaveBeenCalledTimes(1);
@@ -150,7 +149,7 @@ describe('HintModal Component - Complete Testing Guide', () => {
     });
 
     it('calls onAcceptPartialCode when partial code button is clicked', async () => {
-      const user = userEvent.setup();
+      // Using userEvent without setup for compatibility with v13
       
       render(
         <HintModal 
@@ -161,7 +160,7 @@ describe('HintModal Component - Complete Testing Guide', () => {
       );
       
       const partialCodeButton = screen.getByText('Show Partial Code');
-      await user.click(partialCodeButton);
+      await userEvent.click(partialCodeButton);
       
       expect(mockOnAcceptPartialCode).toHaveBeenCalledTimes(1);
     });

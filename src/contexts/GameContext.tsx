@@ -54,6 +54,8 @@ interface GameContextType {
   addLeaderboardEntry: (name: string) => void;
   playerName: string;
   setPlayerName: (name: string) => void;
+  playerAvatar: string;
+  setPlayerAvatar: (avatar: string) => void;
   powerUps: PowerUps;
   useHintToken: () => boolean;
   useSkipToken: () => boolean;
@@ -101,6 +103,8 @@ export const GameContext = createContext<GameContextType>({
   addLeaderboardEntry: () => {},
   playerName: '',
   setPlayerName: () => {},
+  playerAvatar: 'ninja',
+  setPlayerAvatar: () => {},
   powerUps: defaultPowerUps,
   useHintToken: () => false,
   useSkipToken: () => false,
@@ -114,12 +118,14 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [achievements, setAchievements] = useState<Achievement[]>(defaultAchievements);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [playerName, setPlayerName] = useState<string>('');
+  const [playerAvatar, setPlayerAvatar] = useState<string>('ninja');
   const [powerUps, setPowerUps] = useState<PowerUps>(defaultPowerUps);
 
   // Load data from localStorage on mount
   useEffect(() => {
     const savedLeaderboard = localStorage.getItem('syntaxQuestLeaderboard');
     const savedPlayerName = localStorage.getItem('syntaxQuestPlayerName');
+    const savedPlayerAvatar = localStorage.getItem('syntaxQuestAvatar');
     const savedPowerUps = localStorage.getItem('syntaxQuestPowerUps');
     
     if (savedLeaderboard) {
@@ -127,6 +133,9 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
     if (savedPlayerName) {
       setPlayerName(savedPlayerName);
+    }
+    if (savedPlayerAvatar) {
+      setPlayerAvatar(savedPlayerAvatar);
     }
     if (savedPowerUps) {
       setPowerUps(JSON.parse(savedPowerUps));
@@ -195,6 +204,17 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       points += bonusXP;
     }
     
+    // Apply double XP if active
+    if (powerUps.doubleXPActive && powerUps.doubleXPExpiry) {
+      const now = new Date();
+      if (now < powerUps.doubleXPExpiry) {
+        points *= 2;
+      } else {
+        // Expired, deactivate it
+        setPowerUps(prev => ({ ...prev, doubleXPActive: false, doubleXPExpiry: undefined }));
+      }
+    }
+    
     setGameStats((prevStats) => {
       const newXP = prevStats.xp + points;
       let newLevel = prevStats.level;
@@ -241,6 +261,15 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       
       achievementsToUnlock.forEach(achievementId => {
         unlockAchievement(achievementId);
+        
+        // Award power-ups for certain achievements
+        if (achievementId === 'first-blood') {
+          addPowerUp('hint', 2); // 2 bonus hints for first challenge
+        } else if (achievementId === 'perfectionist') {
+          addPowerUp('skip', 2); // 2 skip tokens for 10 perfect solves
+        } else if (achievementId === 'streak-master') {
+          addPowerUp('doubleXP'); // 1 hour double XP for 5 streak
+        }
       });
       
       return newStats;
@@ -348,6 +377,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         addLeaderboardEntry,
         playerName,
         setPlayerName,
+        playerAvatar,
+        setPlayerAvatar,
         powerUps,
         useHintToken,
         useSkipToken,

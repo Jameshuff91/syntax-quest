@@ -2,7 +2,20 @@ import React, { useContext } from 'react';
 import { GameContext } from '../contexts/GameContext';
 
 const GameStats: React.FC = () => {
-  const { gameStats, leaderboard, playerName } = useContext(GameContext);
+  const { gameStats, leaderboard, playerName, playerAvatar } = useContext(GameContext);
+  
+  const avatars: { [key: string]: { emoji: string; name: string } } = {
+    'ninja': { emoji: '🥷', name: 'Code Ninja' },
+    'wizard': { emoji: '🧙‍♂️', name: 'Code Wizard' },
+    'robot': { emoji: '🤖', name: 'Code Bot' },
+    'alien': { emoji: '👽', name: 'Code Alien' },
+    'astronaut': { emoji: '👨‍🚀', name: 'Code Explorer' },
+    'detective': { emoji: '🕵️', name: 'Bug Detective' },
+    'superhero': { emoji: '🦸', name: 'Code Hero' },
+    'pirate': { emoji: '🏴‍☠️', name: 'Code Pirate' },
+    'unicorn': { emoji: '🦄', name: 'Code Unicorn' },
+    'dragon': { emoji: '🐉', name: 'Code Dragon' },
+  };
 
   const xpPercentage = (gameStats.xp / gameStats.xpToNextLevel) * 100;
   
@@ -10,8 +23,20 @@ const GameStats: React.FC = () => {
     entry.score === gameStats.totalPoints && entry.name === playerName
   ) + 1;
 
+  const currentAvatar = avatars[playerAvatar] || avatars['ninja'];
+
   return (
     <div style={styles.container}>
+      <div style={styles.playerInfo}>
+        <div style={styles.avatarBadge}>
+          <span style={styles.avatarEmoji}>{currentAvatar.emoji}</span>
+        </div>
+        <div style={styles.playerDetails}>
+          <h3 style={styles.playerName}>{playerName || 'Anonymous Player'}</h3>
+          <p style={styles.avatarTitle}>{currentAvatar.name}</p>
+        </div>
+      </div>
+      
       <div style={styles.levelContainer}>
         <div style={styles.levelBadge}>
           <span style={styles.levelText}>Level</span>
@@ -76,6 +101,40 @@ const styles = {
     padding: '20px',
     marginBottom: '20px',
     boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+  },
+  playerInfo: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '15px',
+    marginBottom: '20px',
+    paddingBottom: '20px',
+    borderBottom: '2px solid #e0e0e0',
+  },
+  avatarBadge: {
+    width: '60px',
+    height: '60px',
+    borderRadius: '50%',
+    backgroundColor: 'white',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+  },
+  avatarEmoji: {
+    fontSize: '32px',
+  },
+  playerDetails: {
+    flex: 1,
+  },
+  playerName: {
+    margin: '0 0 5px',
+    fontSize: '18px',
+    color: '#333',
+  },
+  avatarTitle: {
+    margin: 0,
+    fontSize: '14px',
+    color: '#666',
   },
   levelContainer: {
     display: 'flex',

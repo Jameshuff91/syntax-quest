@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { GameContext } from '../contexts/GameContext';
+import { soundManager } from '../utils/soundManager';
 
 interface LeaderboardProps {
   onClose?: () => void;
