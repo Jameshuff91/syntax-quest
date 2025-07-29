@@ -21,6 +21,9 @@ const HomePage: React.FC = () => {
         <Link to="/realm/typescript">
           <button style={styles.adventureButton}>Start Typescript Adventure</button>
         </Link>
+        <Link to="/realm/python">
+          <button style={{...styles.adventureButton, backgroundColor: '#3776ab'}}>🐍 Start Python Adventure</button>
+        </Link>
         <Link to="/realm/react">
           <button style={styles.adventureButton}>Start React Adventure</button>
         </Link>
@@ -32,6 +35,15 @@ const HomePage: React.FC = () => {
         </Link>
         <Link to="/realm/debugging">
           <button style={{...styles.adventureButton, backgroundColor: '#ff5722'}}>🐛 Start Debugging Adventure</button>
+        </Link>
+        <Link to="/realm/helm">
+          <button style={{...styles.adventureButton, backgroundColor: '#0f1689'}}>⎈ Start Helm/K8s Adventure</button>
+        </Link>
+        <Link to="/realm/terraform">
+          <button style={{...styles.adventureButton, backgroundColor: '#7c4dff'}}>🏗️ Start Terraform Adventure</button>
+        </Link>
+        <Link to="/realm/cloudcli">
+          <button style={{...styles.adventureButton, backgroundColor: '#ff9100'}}>☁️ Start Cloud CLI Adventure</button>
         </Link>
       </div>
       <div style={styles.movingBar}></div>

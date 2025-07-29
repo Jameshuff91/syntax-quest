@@ -8,6 +8,7 @@ import * as monaco from 'monaco-editor';
 import { useCompiler } from '../hooks/useCompiler';
 import { GameContext } from '../contexts/GameContext';
 import SuccessAnimation from './SuccessAnimation';
+import { soundManager } from '../utils/soundManager';
 
 interface ChallengeCardProps {
   challenge: Challenge;
@@ -91,10 +92,14 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSuccess, onS
       setShowSuccess(true);
       setResultMessage('');
       
+      // Play success sound
+      soundManager.playSuccess();
+      
       addCompletedChallenge(challenge.id, challengeAttempts, challenge.difficulty);
       setTimeout(() => onSuccess(), 3000);
     } else {
       setResultMessage(`Incorrect. Try again! ${compileResult.output || ''}`);
+      soundManager.playError();
       incrementAttempt(challenge.id);
       const nextHint = currentHint + 1;
       if (nextHint <= challenge.hints.length) {
@@ -115,6 +120,7 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSuccess, onS
   const handleSubmit = useCallback(async () => {
     if (isSubmitting || isCompiling) return;
 
+    soundManager.playClick();
     setIsSubmitting(true);
     setResultMessage('Testing your code...');
     

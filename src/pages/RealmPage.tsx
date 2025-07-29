@@ -5,6 +5,7 @@ import ErrorBoundary from '../components/ErrorBoundary';
 import { GameContext } from '../contexts/GameContext';
 import { challenges } from '../data/challenges';
 import { typescriptChallenges } from '../data/typescriptChallenges';
+import { advancedTypescriptChallenges } from '../data/advancedTypescriptChallenges';
 import { reactChallenges } from '../data/reactChallenges';
 import Button from '@mui/material/Button';
 
@@ -26,7 +27,11 @@ const RealmPage: React.FC<RealmPageProps> = ({ realmId: propRealmId }) => {
     setVisibleChallengeIndex(prevIndex => prevIndex + 1); // Move to the next challenge
   };
   
-  const challengeList = currentRealmId === 'typescript' ? typescriptChallenges : currentRealmId === 'react' ? reactChallenges : challenges;
+  const challengeList = currentRealmId === 'typescript' 
+    ? [...typescriptChallenges, ...advancedTypescriptChallenges] 
+    : currentRealmId === 'react' 
+    ? reactChallenges 
+    : challenges;
 
   const realmChallenges = challengeList.filter(
     challenge => challenge.realm === currentRealmId && 

@@ -1,6 +1,7 @@
 // src/contexts/GameContext.tsx
 
 import React, { createContext, useState, useContext, ReactNode } from 'react';
+import { soundManager } from '../utils/soundManager';
 
 interface Achievement {
   id: string;
@@ -122,9 +123,15 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       let newLevel = prevStats.level;
       let remainingXP = newXP;
       
+      let leveledUp = false;
       while (remainingXP >= calculateXPNeeded(newLevel)) {
         remainingXP -= calculateXPNeeded(newLevel);
         newLevel++;
+        leveledUp = true;
+      }
+      
+      if (leveledUp) {
+        soundManager.playLevelUp();
       }
       
       const newStreak = challengeAttempts === 1 ? prevStats.streak + 1 : 0;
@@ -161,13 +168,21 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const unlockAchievement = (achievementId: string) => {
-    setAchievements((prev) => 
-      prev.map(achievement => 
+    setAchievements((prev) => {
+      const wasUnlocked = prev.find(a => a.id === achievementId)?.unlocked;
+      const updated = prev.map(achievement => 
         achievement.id === achievementId && !achievement.unlocked
           ? { ...achievement, unlocked: true, unlockedAt: new Date() }
           : achievement
-      )
-    );
+      );
+      
+      // Play sound only if achievement was newly unlocked
+      if (!wasUnlocked && updated.find(a => a.id === achievementId)?.unlocked) {
+        soundManager.playAchievement();
+      }
+      
+      return updated;
+    });
   };
 
   const resetStreak = () => {

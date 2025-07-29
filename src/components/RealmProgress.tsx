@@ -12,11 +12,15 @@ interface RealmData {
 
 const realms: RealmData[] = [
   { id: 'javascript', name: 'JavaScript', icon: '🟨', color: '#f7df1e', totalChallenges: 10 },
-  { id: 'typescript', name: 'TypeScript', icon: '🔷', color: '#3178c6', totalChallenges: 10 },
+  { id: 'typescript', name: 'TypeScript', icon: '🔷', color: '#3178c6', totalChallenges: 20 },
+  { id: 'python', name: 'Python', icon: '🐍', color: '#3776ab', totalChallenges: 10 },
   { id: 'react', name: 'React', icon: '⚛️', color: '#61dafb', totalChallenges: 10 },
   { id: 'nextjs', name: 'Next.js', icon: '▲', color: '#000000', totalChallenges: 10 },
   { id: 'testing', name: 'Testing', icon: '🧪', color: '#9c27b0', totalChallenges: 10 },
   { id: 'debugging', name: 'Debugging', icon: '🐛', color: '#ff5722', totalChallenges: 10 },
+  { id: 'helm', name: 'Helm/K8s', icon: '⎈', color: '#0f1689', totalChallenges: 10 },
+  { id: 'terraform', name: 'Terraform', icon: '🏗️', color: '#7c4dff', totalChallenges: 10 },
+  { id: 'cloudcli', name: 'Cloud CLI', icon: '☁️', color: '#ff9100', totalChallenges: 10 },
 ];
 
 const RealmProgress: React.FC = () => {

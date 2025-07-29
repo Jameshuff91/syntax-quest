@@ -782,3 +782,10 @@ count = 10;`,
       showSolution: false
     },
   ];
+
+// Export all challenges combined
+export { helmChallenges } from './helmChallenges';
+export { terraformChallenges } from './terraformChallenges';
+export { cloudCliChallenges } from './cloudCliChallenges';
+export { pythonChallenges } from './pythonChallenges';
+export { advancedTypescriptChallenges } from './advancedTypescriptChallenges';
