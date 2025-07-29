@@ -9,7 +9,7 @@ describe('GameContext', () => {
         {({ completedChallenges, addCompletedChallenge, attempts, incrementAttempt }) => (
           <div>
             <div data-testid="completed">{completedChallenges.join(',')}</div>
-            <button onClick={() => addCompletedChallenge('test-1')}>Complete</button>
+            <button onClick={() => addCompletedChallenge('test-1', 1, 'easy')}>Complete</button>
             <div data-testid="attempts">{attempts['test-1'] || 0}</div>
             <button onClick={() => incrementAttempt('test-1')}>Attempt</button>
           </div>

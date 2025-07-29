@@ -1,5 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import GameStats from '../components/GameStats';
+import Achievements from '../components/Achievements';
+import RealmProgress from '../components/RealmProgress';
 
 const HomePage: React.FC = () => {
   return (
@@ -7,6 +10,10 @@ const HomePage: React.FC = () => {
       
       <h1>Welcome to Syntax Quest!</h1>
       <p>Embark on a journey to master JavaScript, TypeScript, React, Testing, and Debugging!</p>
+      
+      <GameStats />
+      <RealmProgress />
+      <Achievements />
       <div style={styles.buttonGrid}>
         <Link to="/realm/javascript">
           <button style={styles.adventureButton}>Start Javascript Adventure</button>
@@ -36,7 +43,7 @@ const styles = {
   container: {
     textAlign: 'center' as 'center',
     padding: '20px',
-    maxWidth: '600px',
+    maxWidth: '800px',
     margin: '0 auto',
     position: 'relative' as 'relative', // Needed for absolute positioning of movingBar
   },

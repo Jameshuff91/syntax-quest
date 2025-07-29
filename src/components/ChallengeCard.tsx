@@ -7,6 +7,7 @@ import Editor from './Editor';
 import * as monaco from 'monaco-editor';
 import { useCompiler } from '../hooks/useCompiler';
 import { GameContext } from '../contexts/GameContext';
+import SuccessAnimation from './SuccessAnimation';
 
 interface ChallengeCardProps {
   challenge: Challenge;
@@ -23,7 +24,9 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSuccess, onS
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [editorKey, setEditorKey] = useState<number>(0); // For forcing editor re-render
   const [editorInstance, setEditorInstance] = useState<monaco.editor.IStandaloneCodeEditor | null>(null);
-  const { addCompletedChallenge, incrementAttempt, attempts } = useContext(GameContext);
+  const [showSuccess, setShowSuccess] = useState<boolean>(false);
+  const [successData, setSuccessData] = useState<{ points: number; streak: number; perfectSolve: boolean }>({ points: 0, streak: 0, perfectSolve: false });
+  const { addCompletedChallenge, incrementAttempt, attempts, gameStats } = useContext(GameContext);
   const isTestingRealm = challenge.realm === 'testing' || challenge.realm === 'debugging';
   const { compile, result: compileResult, isLoading: isCompiling } = useCompiler(isTestingRealm);
 
@@ -74,9 +77,22 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSuccess, onS
     if (!compileResult || !isSubmitting) return;
 
     if (compileResult.success) {
-      setResultMessage('Success! You solved it! 🎉');
-      addCompletedChallenge(challenge.id);
-      onSuccess();
+      const challengeAttempts = (attempts[challenge.id] || 0) + 1;
+      const basePoints = { easy: 100, medium: 200, hard: 300 }[challenge.difficulty] || 100;
+      const attemptMultiplier = Math.max(0.5, 1 - (challengeAttempts - 1) * 0.1);
+      const points = Math.round(basePoints * attemptMultiplier);
+      const isPerfect = challengeAttempts === 1;
+      
+      setSuccessData({
+        points,
+        streak: isPerfect ? gameStats.streak + 1 : 0,
+        perfectSolve: isPerfect,
+      });
+      setShowSuccess(true);
+      setResultMessage('');
+      
+      addCompletedChallenge(challenge.id, challengeAttempts, challenge.difficulty);
+      setTimeout(() => onSuccess(), 3000);
     } else {
       setResultMessage(`Incorrect. Try again! ${compileResult.output || ''}`);
       incrementAttempt(challenge.id);
@@ -93,7 +109,7 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSuccess, onS
       }
     }
     setIsSubmitting(false);
-  }, [compileResult, isSubmitting, challenge.id, addCompletedChallenge, onSuccess, incrementAttempt, currentHint, challenge.hints.length, challenge.solutionCode, attempts]);
+  }, [compileResult, isSubmitting, challenge.id, addCompletedChallenge, onSuccess, incrementAttempt, currentHint, challenge.hints.length, challenge.solutionCode, attempts, gameStats, challenge.difficulty]);
 
   // Handle code submission
   const handleSubmit = useCallback(async () => {
@@ -182,6 +198,14 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSuccess, onS
           Attempts: {attempts[challenge.id]}
         </p>
       )}
+      
+      <SuccessAnimation 
+        show={showSuccess}
+        points={successData.points}
+        streak={successData.streak}
+        perfectSolve={successData.perfectSolve}
+        onComplete={() => setShowSuccess(false)}
+      />
     </div>
   );
 };
