@@ -43,7 +43,7 @@ interface LeaderboardEntry {
 
 interface GameContextType {
   completedChallenges: string[];
-  addCompletedChallenge: (challengeId: string, attempts: number, difficulty: string) => void;
+  addCompletedChallenge: (challengeId: string, attempts: number, difficulty: string, timeBonus?: number) => void;
   attempts: { [key: string]: number };
   incrementAttempt: (challengeId: string) => void;
   gameStats: GameStats;
@@ -191,12 +191,12 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return achievementsToUnlock;
   };
 
-  const addCompletedChallenge = (challengeId: string, challengeAttempts: number, difficulty: string) => {
+  const addCompletedChallenge = (challengeId: string, challengeAttempts: number, difficulty: string, timeBonus: number = 0) => {
     if (completedChallenges.includes(challengeId)) return;
 
     setCompletedChallenges((prev) => [...prev, challengeId]);
     
-    let points = calculatePoints(difficulty, challengeAttempts);
+    let points = calculatePoints(difficulty, challengeAttempts) + timeBonus;
     
     // Add bonus XP for daily challenges
     if (challengeId.startsWith('daily-')) {

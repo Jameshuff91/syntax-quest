@@ -7,6 +7,8 @@ interface SuccessAnimationProps {
   streak: number;
   perfectSolve: boolean;
   attempts?: number;
+  timeBonus?: number;
+  completionTime?: number;
   onComplete?: () => void;
 }
 
@@ -16,6 +18,8 @@ const SuccessAnimation: React.FC<SuccessAnimationProps> = ({
   streak, 
   perfectSolve,
   attempts = 1,
+  timeBonus = 0,
+  completionTime = 0,
   onComplete 
 }) => {
   const [isVisible, setIsVisible] = useState(false);
@@ -59,7 +63,19 @@ const SuccessAnimation: React.FC<SuccessAnimationProps> = ({
         
         <div style={styles.pointsDisplay}>
           <span style={styles.pointsText}>+{points} XP</span>
+          {timeBonus > 0 && (
+            <div style={styles.timeBonusDisplay}>
+              <span style={styles.timeBonusIcon}>⏱️</span>
+              <span style={styles.timeBonusText}>+{timeBonus} Time Bonus!</span>
+            </div>
+          )}
         </div>
+        
+        {completionTime > 0 && (
+          <div style={styles.completionTime}>
+            Completed in {Math.floor(completionTime / 60)}:{(completionTime % 60).toString().padStart(2, '0')}
+          </div>
+        )}
         
         {perfectSolve && (
           <div style={styles.badge}>
@@ -145,6 +161,26 @@ const styles = {
   pointsDisplay: {
     margin: '20px 0',
     animation: 'slideUp 0.6s ease-out 0.3s both',
+  },
+  timeBonusDisplay: {
+    marginTop: '10px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '8px',
+  },
+  timeBonusIcon: {
+    fontSize: '24px',
+  },
+  timeBonusText: {
+    fontSize: '20px',
+    fontWeight: 'bold',
+    color: '#FF9800',
+  },
+  completionTime: {
+    fontSize: '16px',
+    color: '#666',
+    marginTop: '10px',
   },
   pointsText: {
     fontSize: '36px',

@@ -8,6 +8,8 @@ import { typescriptChallenges } from '../data/typescriptChallenges';
 import { advancedTypescriptChallenges } from '../data/advancedTypescriptChallenges';
 import { reactChallenges } from '../data/reactChallenges';
 import Button from '@mui/material/Button';
+import ThemedRealmPage from '../components/ThemedRealmPage';
+import { getRealmTheme } from '../utils/realmThemes';
 
 interface RealmPageProps {
   realmId?: string;
@@ -47,8 +49,11 @@ const RealmPage: React.FC<RealmPageProps> = ({ realmId: propRealmId }) => {
     // Additional success handling if needed
   };
 
+  const theme = getRealmTheme(currentRealmId || 'javascript');
+
   return (
-    <div style={styles.container}>
+    <ThemedRealmPage theme={theme}>
+      <div style={styles.container}>
       <div style={styles.filterContainer}>
         <h3 style={styles.filterTitle}>Filter by Difficulty:</h3>
         <div style={styles.filterButtons}>
@@ -135,7 +140,8 @@ const RealmPage: React.FC<RealmPageProps> = ({ realmId: propRealmId }) => {
           </Button>
         )}
       </div>
-    </div>
+      </div>
+    </ThemedRealmPage>
   );
 };
 

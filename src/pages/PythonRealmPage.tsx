@@ -3,6 +3,8 @@ import ChallengeCard from '../components/ChallengeCard';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { pythonChallenges } from '../data/pythonChallenges';
 import { GameContext } from '../contexts/GameContext';
+import ThemedRealmPage from '../components/ThemedRealmPage';
+import { getRealmTheme } from '../utils/realmThemes';
 
 const PythonRealmPage: React.FC = () => {
   const [selectedChallenge, setSelectedChallenge] = useState<string | null>(null);
@@ -20,14 +22,11 @@ const PythonRealmPage: React.FC = () => {
     console.log(`Challenge ${challengeId} completed!`);
   };
 
+  const theme = getRealmTheme('python');
+
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>
-        <h1 style={styles.title}>🐍 Advanced Python</h1>
-        <p style={styles.description}>
-          Master advanced Python concepts: decorators, async/await, type hints, and more!
-        </p>
-      </div>
+    <ThemedRealmPage theme={theme}>
+      <div style={styles.container}>
 
       <div style={styles.progressContainer}>
         <div style={styles.progressInfo}>
@@ -55,7 +54,8 @@ const PythonRealmPage: React.FC = () => {
           </ErrorBoundary>
         ))}
       </div>
-    </div>
+      </div>
+    </ThemedRealmPage>
   );
 };
 
@@ -84,10 +84,11 @@ const styles = {
   },
   progressContainer: {
     marginBottom: '30px',
-    backgroundColor: 'white',
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
     padding: '20px',
-    borderRadius: '8px',
-    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+    borderRadius: '12px',
+    boxShadow: '0 4px 16px rgba(0,0,0,0.08)',
+    backdropFilter: 'blur(10px)',
   },
   progressInfo: {
     display: 'flex',

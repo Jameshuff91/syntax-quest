@@ -10,6 +10,7 @@ import { GameContext } from '../contexts/GameContext';
 import SuccessAnimation from './SuccessAnimation';
 import { soundManager } from '../utils/soundManager';
 import { getEncouragementMessage } from '../utils/motivationalMessages';
+import ChallengeTimer from './ChallengeTimer';
 
 interface ChallengeCardProps {
   challenge: Challenge;
@@ -27,7 +28,9 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSuccess, onS
   const [editorKey, setEditorKey] = useState<number>(0); // For forcing editor re-render
   const [editorInstance, setEditorInstance] = useState<monaco.editor.IStandaloneCodeEditor | null>(null);
   const [showSuccess, setShowSuccess] = useState<boolean>(false);
-  const [successData, setSuccessData] = useState<{ points: number; streak: number; perfectSolve: boolean }>({ points: 0, streak: 0, perfectSolve: false });
+  const [successData, setSuccessData] = useState<{ points: number; streak: number; perfectSolve: boolean; timeBonus: number }>({ points: 0, streak: 0, perfectSolve: false, timeBonus: 0 });
+  const [isTimerActive, setIsTimerActive] = useState<boolean>(false);
+  const [challengeTime, setChallengeTime] = useState<number>(0);
   const { addCompletedChallenge, incrementAttempt, attempts, gameStats, powerUps, useHintToken, useSkipToken, addPowerUp } = useContext(GameContext);
   const isTestingRealm = challenge.realm === 'testing' || challenge.realm === 'debugging';
   const { compile, result: compileResult, isLoading: isCompiling } = useCompiler(isTestingRealm);
@@ -72,6 +75,8 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSuccess, onS
     setResultMessage('');
     setIsSubmitting(false);
     setEditorKey(prev => prev + 1);
+    setIsTimerActive(false);
+    setChallengeTime(0);
   }, [challenge.id]);
 
   // Handle compilation results
@@ -79,16 +84,31 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSuccess, onS
     if (!compileResult || !isSubmitting) return;
 
     if (compileResult.success) {
+      setIsTimerActive(false);
       const challengeAttempts = (attempts[challenge.id] || 0) + 1;
       const basePoints = { easy: 100, medium: 200, hard: 300 }[challenge.difficulty] || 100;
       const attemptMultiplier = Math.max(0.5, 1 - (challengeAttempts - 1) * 0.1);
-      const points = Math.round(basePoints * attemptMultiplier);
+      
+      // Calculate time bonus
+      const timeLimits = {
+        easy: { gold: 30, silver: 60, bronze: 90 },
+        medium: { gold: 60, silver: 120, bronze: 180 },
+        hard: { gold: 120, silver: 240, bronze: 360 }
+      };
+      const limits = timeLimits[challenge.difficulty];
+      let timeBonus = 0;
+      if (challengeTime <= limits.gold) timeBonus = basePoints * 0.5; // 50% bonus
+      else if (challengeTime <= limits.silver) timeBonus = basePoints * 0.25; // 25% bonus
+      else if (challengeTime <= limits.bronze) timeBonus = basePoints * 0.1; // 10% bonus
+      
+      const points = Math.round(basePoints * attemptMultiplier + timeBonus);
       const isPerfect = challengeAttempts === 1;
       
       setSuccessData({
         points,
         streak: isPerfect ? gameStats.streak + 1 : 0,
         perfectSolve: isPerfect,
+        timeBonus: Math.round(timeBonus),
       });
       setShowSuccess(true);
       setResultMessage('');
@@ -96,7 +116,7 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSuccess, onS
       // Play success sound
       soundManager.playSuccess();
       
-      addCompletedChallenge(challenge.id, challengeAttempts, challenge.difficulty);
+      addCompletedChallenge(challenge.id, challengeAttempts, challenge.difficulty, Math.round(timeBonus));
       setTimeout(() => onSuccess(), 3000);
     } else {
       const encouragement = getEncouragementMessage();
@@ -148,7 +168,11 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSuccess, onS
   const handleCodeChange = useCallback((newCode: string) => {
     setUserCode(newCode);
     setResultMessage(''); // Clear previous results
-  }, []);
+    // Start timer on first edit
+    if (!isTimerActive && newCode !== challenge.starterCode) {
+      setIsTimerActive(true);
+    }
+  }, [isTimerActive, challenge.starterCode]);
 
   return (
     <div className="challenge-card" style={{
@@ -165,6 +189,12 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSuccess, onS
         }}>{challenge.difficulty}</span>
       </div>
       <p style={styles.description}>{challenge.description}</p>
+      
+      <ChallengeTimer 
+        isActive={isTimerActive}
+        onTimeUpdate={setChallengeTime}
+        difficulty={challenge.difficulty}
+      />
 
       <Editor 
         key={editorKey}
@@ -202,7 +232,7 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSuccess, onS
               if (useSkipToken()) {
                 // Award partial XP for skipping
                 const partialAttempts = 5; // Treat as 5 attempts for XP calculation
-                addCompletedChallenge(challenge.id, partialAttempts, challenge.difficulty);
+                addCompletedChallenge(challenge.id, partialAttempts, challenge.difficulty, 0);
                 onSuccess();
               }
             }}
@@ -243,6 +273,8 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSuccess, onS
         streak={successData.streak}
         perfectSolve={successData.perfectSolve}
         attempts={(attempts[challenge.id] || 0) + 1}
+        timeBonus={successData.timeBonus}
+        completionTime={challengeTime}
         onComplete={() => setShowSuccess(false)}
       />
     </div>
