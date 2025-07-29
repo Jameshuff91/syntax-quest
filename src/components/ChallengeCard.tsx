@@ -31,7 +31,7 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSuccess, onS
   const [successData, setSuccessData] = useState<{ points: number; streak: number; perfectSolve: boolean; timeBonus: number }>({ points: 0, streak: 0, perfectSolve: false, timeBonus: 0 });
   const [isTimerActive, setIsTimerActive] = useState<boolean>(false);
   const [challengeTime, setChallengeTime] = useState<number>(0);
-  const { addCompletedChallenge, incrementAttempt, attempts, gameStats, powerUps, useHintToken, useSkipToken, addPowerUp } = useContext(GameContext);
+  const { addCompletedChallenge, incrementAttempt, attempts, gameStats, powerUps, consumeHintToken, consumeSkipToken, addPowerUp } = useContext(GameContext);
   const isTestingRealm = challenge.realm === 'testing' || challenge.realm === 'debugging';
   const { compile, result: compileResult, isLoading: isCompiling } = useCompiler(isTestingRealm);
 
@@ -215,7 +215,7 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSuccess, onS
         {powerUps.hintTokens > 0 && currentHint < challenge.hints.length && (
           <button
             onClick={() => {
-              if (useHintToken()) {
+              if (consumeHintToken()) {
                 setCurrentHint(prev => Math.min(prev + 1, challenge.hints.length));
                 setShowHint(true);
               }
@@ -229,7 +229,7 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSuccess, onS
         {powerUps.skipTokens > 0 && (
           <button
             onClick={() => {
-              if (useSkipToken()) {
+              if (consumeSkipToken()) {
                 // Award partial XP for skipping
                 const partialAttempts = 5; // Treat as 5 attempts for XP calculation
                 addCompletedChallenge(challenge.id, partialAttempts, challenge.difficulty, 0);

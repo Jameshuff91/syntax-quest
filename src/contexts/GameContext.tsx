@@ -57,8 +57,8 @@ interface GameContextType {
   playerAvatar: string;
   setPlayerAvatar: (avatar: string) => void;
   powerUps: PowerUps;
-  useHintToken: () => boolean;
-  useSkipToken: () => boolean;
+  consumeHintToken: () => boolean;
+  consumeSkipToken: () => boolean;
   addPowerUp: (type: 'hint' | 'skip' | 'doubleXP', quantity?: number) => void;
 }
 
@@ -106,8 +106,8 @@ export const GameContext = createContext<GameContextType>({
   playerAvatar: 'ninja',
   setPlayerAvatar: () => {},
   powerUps: defaultPowerUps,
-  useHintToken: () => false,
-  useSkipToken: () => false,
+  consumeHintToken: () => false,
+  consumeSkipToken: () => false,
   addPowerUp: () => {},
 });
 
@@ -326,7 +326,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     localStorage.setItem('syntaxQuestPlayerName', name);
   };
 
-  const useHintToken = (): boolean => {
+  const consumeHintToken = (): boolean => {
     if (powerUps.hintTokens > 0) {
       setPowerUps(prev => ({ ...prev, hintTokens: prev.hintTokens - 1 }));
       soundManager.playClick();
@@ -335,7 +335,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return false;
   };
 
-  const useSkipToken = (): boolean => {
+  const consumeSkipToken = (): boolean => {
     if (powerUps.skipTokens > 0) {
       setPowerUps(prev => ({ ...prev, skipTokens: prev.skipTokens - 1 }));
       soundManager.playSuccess();
@@ -380,8 +380,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         playerAvatar,
         setPlayerAvatar,
         powerUps,
-        useHintToken,
-        useSkipToken,
+        consumeHintToken,
+        consumeSkipToken,
         addPowerUp,
       }}
     >
