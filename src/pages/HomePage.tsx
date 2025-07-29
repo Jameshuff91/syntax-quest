@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import GameStats from '../components/GameStats';
 import Achievements from '../components/Achievements';
 import RealmProgress from '../components/RealmProgress';
+import Leaderboard from '../components/Leaderboard';
+import DailyChallenge from '../components/DailyChallenge';
 
 const HomePage: React.FC = () => {
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
+
   return (
     <main style={styles.container}>
       
@@ -12,8 +16,19 @@ const HomePage: React.FC = () => {
       <p>Embark on a journey to master JavaScript, TypeScript, React, Testing, and Debugging!</p>
       
       <GameStats />
+      <DailyChallenge />
       <RealmProgress />
       <Achievements />
+      
+      <div style={styles.leaderboardSection}>
+        <button 
+          onClick={() => setShowLeaderboard(true)}
+          style={styles.leaderboardButton}
+        >
+          🏆 View Leaderboard
+        </button>
+      </div>
+      
       <div style={styles.buttonGrid}>
         <Link to="/realm/javascript">
           <button style={styles.adventureButton}>Start Javascript Adventure</button>
@@ -47,6 +62,10 @@ const HomePage: React.FC = () => {
         </Link>
       </div>
       <div style={styles.movingBar}></div>
+      
+      {showLeaderboard && (
+        <Leaderboard onClose={() => setShowLeaderboard(false)} />
+      )}
     </main>
   );
 };
@@ -88,6 +107,26 @@ const styles = {
     },
     '100%': {
       transform: 'translateX(100%)',
+    },
+  },
+  leaderboardSection: {
+    margin: '20px 0',
+    textAlign: 'center' as 'center',
+  },
+  leaderboardButton: {
+    padding: '15px 30px',
+    fontSize: '18px',
+    cursor: 'pointer',
+    backgroundColor: '#FFD700',
+    color: '#333',
+    border: 'none',
+    borderRadius: '8px',
+    fontWeight: 'bold',
+    boxShadow: '0 4px 12px rgba(255, 215, 0, 0.3)',
+    transition: 'all 0.3s',
+    ':hover': {
+      transform: 'translateY(-2px)',
+      boxShadow: '0 6px 16px rgba(255, 215, 0, 0.4)',
     },
   },
 };

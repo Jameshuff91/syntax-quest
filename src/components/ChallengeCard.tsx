@@ -9,6 +9,7 @@ import { useCompiler } from '../hooks/useCompiler';
 import { GameContext } from '../contexts/GameContext';
 import SuccessAnimation from './SuccessAnimation';
 import { soundManager } from '../utils/soundManager';
+import { getEncouragementMessage } from '../utils/motivationalMessages';
 
 interface ChallengeCardProps {
   challenge: Challenge;
@@ -98,7 +99,8 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSuccess, onS
       addCompletedChallenge(challenge.id, challengeAttempts, challenge.difficulty);
       setTimeout(() => onSuccess(), 3000);
     } else {
-      setResultMessage(`Incorrect. Try again! ${compileResult.output || ''}`);
+      const encouragement = getEncouragementMessage();
+      setResultMessage(`${encouragement} ${compileResult.output || ''}`);
       soundManager.playError();
       incrementAttempt(challenge.id);
       const nextHint = currentHint + 1;
@@ -210,6 +212,7 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSuccess, onS
         points={successData.points}
         streak={successData.streak}
         perfectSolve={successData.perfectSolve}
+        attempts={(attempts[challenge.id] || 0) + 1}
         onComplete={() => setShowSuccess(false)}
       />
     </div>

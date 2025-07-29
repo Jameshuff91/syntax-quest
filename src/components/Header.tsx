@@ -4,9 +4,11 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
+import Leaderboard from './Leaderboard';
 
 const Header: React.FC = () => {
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
 
   const toggleSignIn = () => {
     setIsSignedIn(!isSignedIn);
@@ -28,12 +30,19 @@ const Header: React.FC = () => {
           <Link to="/progress" style={{ textDecoration: 'none', color: 'inherit' }}>
             <Button color="inherit">📊 Progress</Button>
           </Link>
+          <Button color="inherit" onClick={() => setShowLeaderboard(true)}>
+            🏆 Leaderboard
+          </Button>
           <Button color="inherit" onClick={toggleSignIn}>
             {isSignedIn ? 'Sign Out' : 'Sign In'}
           </Button>
         </div>
       </Toolbar>
     </AppBar>
+    {showLeaderboard && (
+      <Leaderboard onClose={() => setShowLeaderboard(false)} />
+    )}
+    </>
   );
 };
 

@@ -1,7 +1,8 @@
 // src/contexts/GameContext.tsx
 
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 import { soundManager } from '../utils/soundManager';
+import { getLevelUpMessage } from '../utils/motivationalMessages';
 
 interface Achievement {
   id: string;
@@ -23,6 +24,16 @@ interface GameStats {
   perfectSolves: number;
 }
 
+interface LeaderboardEntry {
+  id: string;
+  name: string;
+  score: number;
+  level: number;
+  challenges: number;
+  date: Date;
+  realm?: string;
+}
+
 interface GameContextType {
   completedChallenges: string[];
   addCompletedChallenge: (challengeId: string, attempts: number, difficulty: string) => void;
@@ -32,6 +43,10 @@ interface GameContextType {
   achievements: Achievement[];
   unlockAchievement: (achievementId: string) => void;
   resetStreak: () => void;
+  leaderboard: LeaderboardEntry[];
+  addLeaderboardEntry: (name: string) => void;
+  playerName: string;
+  setPlayerName: (name: string) => void;
 }
 
 const defaultAchievements: Achievement[] = [
@@ -65,6 +80,10 @@ export const GameContext = createContext<GameContextType>({
   achievements: defaultAchievements,
   unlockAchievement: () => {},
   resetStreak: () => {},
+  leaderboard: [],
+  addLeaderboardEntry: () => {},
+  playerName: '',
+  setPlayerName: () => {},
 });
 
 export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -72,6 +91,27 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [attempts, setAttempts] = useState<{ [key: string]: number }>({});
   const [gameStats, setGameStats] = useState<GameStats>(defaultGameStats);
   const [achievements, setAchievements] = useState<Achievement[]>(defaultAchievements);
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [playerName, setPlayerName] = useState<string>('');
+
+  // Load leaderboard from localStorage on mount
+  useEffect(() => {
+    const savedLeaderboard = localStorage.getItem('syntaxQuestLeaderboard');
+    const savedPlayerName = localStorage.getItem('syntaxQuestPlayerName');
+    if (savedLeaderboard) {
+      setLeaderboard(JSON.parse(savedLeaderboard));
+    }
+    if (savedPlayerName) {
+      setPlayerName(savedPlayerName);
+    }
+  }, []);
+
+  // Save leaderboard to localStorage whenever it changes
+  useEffect(() => {
+    if (leaderboard.length > 0) {
+      localStorage.setItem('syntaxQuestLeaderboard', JSON.stringify(leaderboard));
+    }
+  }, [leaderboard]);
 
   const calculatePoints = (difficulty: string, attempts: number): number => {
     const basePoints = { easy: 100, medium: 200, hard: 300 }[difficulty] || 100;
@@ -116,7 +156,13 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     setCompletedChallenges((prev) => [...prev, challengeId]);
     
-    const points = calculatePoints(difficulty, challengeAttempts);
+    let points = calculatePoints(difficulty, challengeAttempts);
+    
+    // Add bonus XP for daily challenges
+    if (challengeId.startsWith('daily-')) {
+      const bonusXP = { easy: 150, medium: 400, hard: 750 }[difficulty] || 150;
+      points += bonusXP;
+    }
     
     setGameStats((prevStats) => {
       const newXP = prevStats.xp + points;
@@ -189,6 +235,27 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setGameStats((prev) => ({ ...prev, streak: 0 }));
   };
 
+  const addLeaderboardEntry = (name: string) => {
+    const newEntry: LeaderboardEntry = {
+      id: Date.now().toString(),
+      name,
+      score: gameStats.totalPoints,
+      level: gameStats.level,
+      challenges: gameStats.totalChallengesCompleted,
+      date: new Date(),
+    };
+
+    setLeaderboard((prev) => {
+      const updated = [...prev, newEntry];
+      // Sort by score descending and keep top 100
+      return updated.sort((a, b) => b.score - a.score).slice(0, 100);
+    });
+
+    // Save player name
+    setPlayerName(name);
+    localStorage.setItem('syntaxQuestPlayerName', name);
+  };
+
   return (
     <GameContext.Provider
       value={{ 
@@ -200,6 +267,10 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         achievements,
         unlockAchievement,
         resetStreak,
+        leaderboard,
+        addLeaderboardEntry,
+        playerName,
+        setPlayerName,
       }}
     >
       {children}

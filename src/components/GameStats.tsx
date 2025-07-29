@@ -2,9 +2,13 @@ import React, { useContext } from 'react';
 import { GameContext } from '../contexts/GameContext';
 
 const GameStats: React.FC = () => {
-  const { gameStats } = useContext(GameContext);
+  const { gameStats, leaderboard, playerName } = useContext(GameContext);
 
   const xpPercentage = (gameStats.xp / gameStats.xpToNextLevel) * 100;
+  
+  const currentRank = leaderboard.findIndex(entry => 
+    entry.score === gameStats.totalPoints && entry.name === playerName
+  ) + 1;
 
   return (
     <div style={styles.container}>
@@ -52,6 +56,14 @@ const GameStats: React.FC = () => {
           <span style={styles.statValue}>{gameStats.perfectSolves}</span>
           <span style={styles.statLabel}>Perfect Solves</span>
         </div>
+        
+        {currentRank > 0 && (
+          <div style={styles.statCard}>
+            <span style={styles.statIcon}>🏆</span>
+            <span style={styles.statValue}>#{currentRank}</span>
+            <span style={styles.statLabel}>Leaderboard Rank</span>
+          </div>
+        )}
       </div>
     </div>
   );

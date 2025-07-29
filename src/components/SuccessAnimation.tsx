@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { getChallengeCompletionMessage } from '../utils/motivationalMessages';
 
 interface SuccessAnimationProps {
   show: boolean;
   points: number;
   streak: number;
   perfectSolve: boolean;
+  attempts?: number;
   onComplete?: () => void;
 }
 
@@ -13,14 +15,20 @@ const SuccessAnimation: React.FC<SuccessAnimationProps> = ({
   points, 
   streak, 
   perfectSolve,
+  attempts = 1,
   onComplete 
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number }>>([]);
+  const [messages, setMessages] = useState<{ main: string; extra?: string; quote?: string }>({ main: '' });
 
   useEffect(() => {
     if (show) {
       setIsVisible(true);
+      
+      // Get motivational message
+      const completionMessages = getChallengeCompletionMessage(perfectSolve, streak, attempts);
+      setMessages(completionMessages);
       
       // Generate confetti particles
       const newParticles = Array.from({ length: 20 }, (_, i) => ({
@@ -47,7 +55,7 @@ const SuccessAnimation: React.FC<SuccessAnimationProps> = ({
       <div style={styles.container}>
         <div style={styles.successIcon}>✓</div>
         
-        <h2 style={styles.title}>Challenge Complete!</h2>
+        <h2 style={styles.title}>{messages.main || 'Challenge Complete!'}</h2>
         
         <div style={styles.pointsDisplay}>
           <span style={styles.pointsText}>+{points} XP</span>
@@ -60,10 +68,15 @@ const SuccessAnimation: React.FC<SuccessAnimationProps> = ({
           </div>
         )}
         
-        {streak > 1 && (
-          <div style={styles.streakDisplay}>
-            <span style={styles.streakIcon}>🔥</span>
-            {streak} Challenge Streak!
+        {messages.extra && (
+          <div style={styles.extraMessage}>
+            {messages.extra}
+          </div>
+        )}
+        
+        {messages.quote && (
+          <div style={styles.quote}>
+            {messages.quote}
           </div>
         )}
         
@@ -168,6 +181,25 @@ const styles = {
   },
   streakIcon: {
     fontSize: '24px',
+  },
+  extraMessage: {
+    marginTop: '15px',
+    fontSize: '18px',
+    fontWeight: 'bold',
+    color: '#FF5722',
+    animation: 'slideUp 0.6s ease-out 0.6s both',
+  },
+  quote: {
+    marginTop: '20px',
+    padding: '15px',
+    backgroundColor: '#f5f5f5',
+    borderRadius: '8px',
+    fontSize: '14px',
+    fontStyle: 'italic' as const,
+    color: '#666',
+    maxWidth: '400px',
+    margin: '20px auto 0',
+    animation: 'slideUp 0.6s ease-out 0.7s both',
   },
   particle: {
     position: 'absolute' as const,
